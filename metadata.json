@@ -1,0 +1,16 @@
+{
+  "name": "cesnet-oozie",
+  "version": "0.1.0",
+  "author": "František Dvořák <valtri@civ.zcu.cz>",
+  "summary": "Setup Apache Oozie Workflow Scheduler",
+  "license": "Apache 2.0",
+  "source": "http://scientific.zcu.cz/git/cesnet-oozie.git",
+  "project_page": "",
+  "issues_url": "František Dvořák <valtri@civ.zcu.cz>",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
+  ]
+}
