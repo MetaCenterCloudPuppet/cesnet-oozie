@@ -9,6 +9,11 @@ class oozie::params {
     redhat => undef,
   }
 
+  $alternatives_ssl = $::osfamily ? {
+    debian => 'oozie-tomcat-conf',
+    redhat => undef,
+  }
+
   $confdir = $::osfamily ? {
     debian => '/etc/oozie/conf',
     redhat => '/etc/oozie',
