@@ -4,28 +4,49 @@
 #
 # === Parameters
 #
-# [*db*] 'derby'
+# ####`db` *derby*
 #
 # Database type. Values can be *derby*, *mysql*, *postgres*, or *oracle*.
 #
-# [*db_host*] 'localhost'
+# ####`db_host` *localhost*
 #
 # Database host.
 #
-# [*db_name*] 'oozie'
+# ####db_name *oozie*
 #
 # Database name.
 #
-# [*db_user*] 'oozie'
+# ####`db_user` *oozie*
 #
 # Database user.
 #
-# [*db_password*] ' '
+# `db_password` * *
 #
 # Database password.
 #
-# [*https*] false
-#   Enable HTTPS.
+# ####`defaultFS` *hdfs://${hdfs_hostname}:8020*
+#
+# Hadoop URI. Used hdfs://${hdfs_hostname}:8020, if not specified.
+#
+# ####`hdfs_hostname` *localhost*
+#
+# Hadoop namenode. Not needed, you can use *defautFS* instead.
+#
+# ####`https` *false*
+#
+# Enable HTTPS.
+#
+# ####`https_keystore` '/etc/security/server.keystore'
+#
+# Certificates keystore file.
+#
+# ####`https_keystore_password` 'changeit'
+#
+# Certificates keystore file password.
+#
+# ####`realm` (required)
+#
+# Kerberos realm. Empty string, if the security is disabled.
 #
 class oozie (
   $db = 'derby',
@@ -33,18 +54,30 @@ class oozie (
   $db_name = 'oozie',
   $db_user = 'oozie',
   $db_password = ' ',
+  $defaultFS = undef,
+  $hdfs_hostname = 'localhost',
   $https = false,
+  $https_keystore = '/etc/security/server.keystore',
+  $https_keystore_password = 'changeit',
   $perform = false,
   $properties = {},
+  $realm,
 ) inherits ::oozie::params {
 
-  validat_string($db)
-  validat_string($db_host)
-  validat_string($db_name)
-  validat_string($db_user)
+  validate_string($db)
+  validate_string($db_host)
+  validate_string($db_name)
+  validate_string($db_user)
+  validate_string($hdfs_hostname)
   validate_bool($https)
   validate_bool($perform)
   validate_hash($properties)
+
+  if $defaultFS {
+    $_defaultFS = $default_FS
+  } else {
+    $_defaultFS = "hdfs://${hdfs_hostname}:8020"
+  }
 
   $dyn_properties = {
     'oozie.service.ActionService.executor.ext.classes' => '
@@ -83,7 +116,8 @@ class oozie (
     'oozie.authentication.token.validity' => 3600,
     'oozie.authentication.cookie.domain' => '',
     'oozie.authentication.simple.anonymous.allowed' => true,
-    'oozie.service.ProxyUserService.proxyuser.hue.hosts' => '*'.
+    'oozie.action.mapreduce.uber.jar.enable' => true,
+    'oozie.service.ProxyUserService.proxyuser.hue.hosts' => '*',
     'oozie.service.ProxyUserService.proxyuser.hue.groups' => '*',
   }
 
@@ -143,11 +177,12 @@ class oozie (
     'oozie.authentication.simple.anonymous.allowed' => 'Indicates if anonymous requests are allowed.
             This setting is meaningful only when using "simple" authentication.',
     'oozie.authentication.kerberos.principal' => 'Indicates the Kerberos principal to be used for HTTP endpoint.
-            The principal MUST start with 'HTTP/' as per Kerberos HTTP SPNEGO specification.',
+            The principal MUST start with "HTTP/" as per Kerberos HTTP SPNEGO specification.',
     'oozie.authentication.kerberos.keytab' => 'Location of the keytab file with the credentials for the principal.
             Referring to the same keytab file Oozie uses for its Kerberos credentials for Hadoop.',
       'oozie.authentication.kerberos.name.rules' => 'The kerberos names rules is to resolve kerberos principal names, refer to Hadoops
             KerberosName for more details.',
+      'oozie.action.mapreduce.uber.jar.enable' => 'Handle uber JARs properly for the MapReduce action (as long as it does not include any streaming or pipes)',
   }
 
   case $db {
@@ -179,7 +214,7 @@ class oozie (
     }
   }
 
-  if $db == /^(mysql|mariadb|postgresql|oracle)$/ {
+  if $db =~ /^(mysql|mariadb|postgresql|oracle)$/ {
     if $db_password {
       $db_pw_properties = {
         'oozie.service.JPAService.jdbc.password' => $db_password,
@@ -187,19 +222,34 @@ class oozie (
     }
   }
 
+  # Hadoop Authentication
   if $realm {
     $sec_properties = {
-      'oozie.service.HadoopAccessorService.kerberos.enabled' => true,
       'local.realm' => $realm,
-      'oozie.service.HadoopAccessorService.keytab.file' => '${user.home}/oozie.keytab',
+      'oozie.service.AuthorizationService.security.enabled' => true,
+      'oozie.service.HadoopAccessorService.kerberos.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.principal' => "\${user.name}/${::fqdn}@\${local.realm}",
-      'oozie.authentication.type' => 'kerberos',
-      'oozie.authentication.cookie.domain' => downcase($realm),
-      'oozie.authentication.kerberos.principal' => "HTTP/${::fqdn}@\${local.realm}",
-      'oozie.authentication.kerberos.keytab' => '${oozie.service.HadoopAccessorService.keytab.file}',
-      'oozie.authentication.kerberos.name.rules' => 'DEFAULT',
+      #'oozie.service.HadoopAccessorService.keytab.file' => '${user.home}/oozie.keytab',
+      'oozie.service.HadoopAccessorService.keytab.file' => '/etc/security/keytab/oozie.service.keytab',
     }
   }
 
-  $_properties = merge($db_properties, $db_pwd_properties, $sec_properties, $properties)
+  # Oozie Authentication
+  if $https {
+    $https_properties = {
+      'local.realm' => $realm,
+      'oozie.authentication.type' => 'kerberos',
+      'oozie.authentication.cookie.domain' => downcase($realm),
+      'oozie.authentication.kerberos.principal' => "HTTP/${::fqdn}@\${local.realm}",
+      #'oozie.authentication.kerberos.keytab' => '${oozie.service.HadoopAccessorService.keytab.file}',
+      'oozie.authentication.kerberos.keytab' => '${user.home}/http.service.keytab',
+      'oozie.authentication.kerberos.name.rules' => "
+RULE:[2:\$1;\$2@\$0](^oozie;.*@${realm}$)s/^.*$/oozie/
+DEFAULT
+",
+      'oozie.https.keystore.pass' => $https_keystore_password,
+    }
+  }
+
+  $_properties = merge($dyn_properties, $db_properties, $db_pwd_properties, $sec_properties, $https_properties, $properties)
 }

@@ -9,13 +9,12 @@ class oozie::server::install {
   if $::oozie::https {
     $conf = '/etc/oozie/tomcat-conf.https'
   } else {
-    $conf = '/etc/oozie/tomcat-conf.https'
+    $conf = '/etc/oozie/tomcat-conf.http'
   }
-  exec { 'oozie-aternatives':
-    command => "$::oozie:altcmd --set oozie-tomcat-conf ${conf}"
-    path    => '/sbin:/usr/sbin:/bin:/usr/bin',
+  alternatives{'oozie-tomcat-conf':
+    path => $conf,
   }
 
-  Package[$oozie::packages['server']] ~> Exec['oozi-alternatives']
+  Package[$oozie::packages['server']] -> Alternatives['oozie-tomcat-conf']
   Package[$oozie::packages['server']] -> Class['oozie::common::postinstall']
 }

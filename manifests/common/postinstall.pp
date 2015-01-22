@@ -13,18 +13,14 @@ class oozie::common::postinstall {
       creates => "/etc/oozie/conf.${confname}",
     }
     ->
-    exec { 'oozie-install-alternatives':
-      command     => "${::oozie::altcmd} --install /etc/oozie/conf oozie-conf /etc/oozie/conf.${confname} 50",
-      path        => $path,
-      refreshonly => true,
-      subscribe   => Exec['oozie-copy-config'],
+    alternative_entry{"/etc/oozie/conf.${confname}":
+      altlink => '/etc/oozie/conf',
+      altname => 'oozie-conf',
+      priority => 50,
     }
     ->
-    exec { 'oozie-set-alternatives':
-      command     => "${::oozie::altcmd} --set oozie-conf /etc/oozie/conf.${confname}",
-      path        => $path,
-      refreshonly => true,
-      subscribe   => Exec['oozie-copy-config'],
+    alternatives{"oozie-conf":
+      path => "/etc/oozie/conf.${confname}",
     }
   }
 }

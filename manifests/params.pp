@@ -4,11 +4,6 @@
 # It sets variables according to platform.
 #
 class oozie::params {
-  $altcmd = $::osfamily ? {
-    debian => 'update-alternatives',
-    redhat => 'alternatives',
-  }
-
   $alternatives = $::osfamily ? {
     debian => 'cluster',
     redhat => undef,
@@ -19,24 +14,31 @@ class oozie::params {
     redhat => '/etc/oozie',
   }
 
+  $daemon = 'oozie'
+
   $hadoop_confdir = $::osfamily ? {
     debian => '/etc/hadoop/conf',
     redhat => '/etc/hadoop',
   }
 
-  $packages = $::osfamily ? {
-    debian => {
+  $oozie_homedir = '/var/lib/oozie'
+
+  case $::osfamily {
+    'debian': {
+      $packages = {
         'server' => 'oozie',
         'client' => 'oozie-client',
+      }
     }
-    redhat => {
+    'redhat': {
+      $packages = {
         'server' => 'oozie',
         'client' => 'oozie',
+      }
     }
     default: {
       fail("${::operatingsystem} not supported")
     }
   }
 
-  $daemon = 'oozie'  
 }

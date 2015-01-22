@@ -28,10 +28,10 @@
 <%if scope.lookupvar('oozie::descriptions')[p] -%>
   <!-- <%= scope.lookupvar('oozie::descriptions')[p] %> -->
 <% end -%>
-  <properties>
+  <property>
     <name><%= p -%></name>
     <value><%= properties[p] -%></value>
-  </properties>
-<% end -%>
+  </property>
 
+<% end -%>
 </configuration>
