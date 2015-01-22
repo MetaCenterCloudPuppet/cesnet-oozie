@@ -28,6 +28,10 @@
 #
 # Hadoop URI. Used hdfs://${hdfs_hostname}:8020, if not specified.
 #
+# ####`environment` true
+#
+# Define environment variable OOZIE_URL on clients.
+#
 # ####`hdfs_hostname` *localhost*
 #
 # Hadoop namenode. Not needed, you can use *defautFS* instead.
@@ -55,6 +59,7 @@ class oozie (
   $db_user = 'oozie',
   $db_password = ' ',
   $defaultFS = undef,
+  $environment = true,
   $hdfs_hostname = 'localhost',
   $https = false,
   $https_keystore = '/etc/security/server.keystore',
