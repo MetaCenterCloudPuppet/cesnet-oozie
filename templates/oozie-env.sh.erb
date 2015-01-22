@@ -9,7 +9,7 @@ CATALINA_BASE=/usr/share/oozie/oozie-server
 OOZIE_BASE_URL=http://localhost:11000/oozie
 
 OOZIE_HTTPS_PORT=11443
-OOZIE_HTTPS_KEYSTORE_PASS='<%= scope.lookupvar('zookeeper::https_keystore_password') -%>'
+OOZIE_HTTPS_KEYSTORE_PASS='<%= scope.lookupvar('oozie::https_keystore_password') -%>'
 CATALINA_OPTS="$CATALINA_OPTS -Doozie.https.port=${OOZIE_HTTPS_PORT}"
 CATALINA_OPTS="$CATALINA_OPTS -Doozie.https.keystore.pass=${OOZIE_HTTPS_KEYSTORE_PASS}"
 <% elsif @osfamily == 'Debian' -%>
