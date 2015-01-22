@@ -25,11 +25,26 @@ class oozie::server::config {
   }
 
   $touchfile_setup = '/var/lib/oozie/.puppet-oozie-setup'
+  $path = '/sbin:/usr/sbin:/bin:/usr/bin'
   exec { 'oozie-setup':
     command => "oozie-setup sharelib create -fs ${::oozie::_defaultFS} -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz && touch ${touchfile_setup}",
-    path    => '/sbin:/usr/sbin:/bin:/usr/bin',
+    path    => $path,
     creates => $touchfile_setup,
     require => [File["${::oozie::confdir}/oozie-site.xml"], File["${::oozie::confdir}/oozie-env.sh"]],
+  }
+
+  exec {'download-ext-2.2':
+    command => 'wget -P /var/lib/oozie http://archive.cloudera.com/gplextras/misc/ext-2.2.zip',
+    creates => '/var/lib/oozie/ext-2.2',
+    path    => $path,
+    unless  => 'test -s /var/lib/oozie/ext-2.2.zip',
+  }
+  ->
+  exec {'extract-ext-2.2':
+    command => 'unzip ext-2.2.zip',
+    creates => '/var/lib/oozie/ext-2.2',
+    cwd     => '/var/lib/oozie',
+    path    => $path,
   }
 
   if $::oozie::realm {
