@@ -1,3 +1,7 @@
+# == Class oozie::client::config
+#
+# Oozie client setup. Shell profile files are created or removed.
+#
 class oozie::client::config {
   $realm = $oozie::realm
 

@@ -81,7 +81,7 @@ class oozie (
   validate_hash($properties)
 
   if $defaultFS {
-    $_defaultFS = $default_FS
+    $_defaultFS = $defaultFS
   } else {
     $_defaultFS = "hdfs://${hdfs_hostname}:8020"
   }

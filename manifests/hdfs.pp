@@ -14,7 +14,7 @@ class oozie::hdfs {
     ensure => present,
     system => true,
   }
-  case "${::osfamily}" {
+  case $::osfamily {
     'RedHat': {
       user { 'oozie':
         ensure     => present,
@@ -38,6 +38,9 @@ class oozie::hdfs {
         password   => '!!',
         shell      => '/bin/false',
       }
+    }
+    default: {
+      notice("${::os_family} not supported")
     }
   }
   Group['oozie'] -> User['oozie']

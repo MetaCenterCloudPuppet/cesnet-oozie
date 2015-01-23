@@ -14,12 +14,12 @@ class oozie::common::postinstall {
     }
     ->
     alternative_entry{"/etc/oozie/conf.${confname}":
-      altlink => '/etc/oozie/conf',
-      altname => 'oozie-conf',
+      altlink  => '/etc/oozie/conf',
+      altname  => 'oozie-conf',
       priority => 50,
     }
     ->
-    alternatives{"oozie-conf":
+    alternatives{'oozie-conf':
       path => "/etc/oozie/conf.${confname}",
     }
   }

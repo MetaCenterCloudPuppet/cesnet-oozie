@@ -48,10 +48,10 @@ class oozie::server::config {
   }
 
   if $::oozie::realm {
-    file { "/etc/security/keytab/oozie.service.keytab":
-      owner  => 'oozie',
-      group  => 'oozie',
-      mode   => '0400',
+    file { '/etc/security/keytab/oozie.service.keytab':
+      owner => 'oozie',
+      group => 'oozie',
+      mode  => '0400',
     }
   }
 
