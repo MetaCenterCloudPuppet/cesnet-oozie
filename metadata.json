@@ -1,12 +1,12 @@
 {
   "name": "cesnet-oozie",
-  "version": "0.1.0",
-  "author": "František Dvořák <valtri@civ.zcu.cz>",
+  "version": "0.9.0",
+  "author": "Frantisek Dvorak <valtri@civ.zcu.cz>",
   "summary": "Setup Apache Oozie Workflow Scheduler",
   "license": "MIT",
-  "source": "http://scientific.zcu.cz/git/cesnet-oozie.git",
-  "project_page": "",
-  "issues_url": "František Dvořák <valtri@civ.zcu.cz>",
+  "source": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie",
+  "project_page": "https://github.com/MetaCenterCloudPuppet",
+  "issues_url": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",

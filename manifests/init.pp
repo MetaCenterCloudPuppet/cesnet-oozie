@@ -8,11 +8,13 @@
 #
 # Database type. Values can be *derby*, *mysql*, *postgres*, or *oracle*.
 #
+# TODO: only Derby supported for now
+#
 # ####`db_host` *localhost*
 #
 # Database host.
 #
-# ####db_name *oozie*
+# ####`db_name` *oozie*
 #
 # Database name.
 #
@@ -20,17 +22,17 @@
 #
 # Database user.
 #
-# `db_password` * *
+# ####`db_password` (space)
 #
-# Database password.
+# Database password. Oozie will need a space, when using empty password.
 #
-# ####`defaultFS` *hdfs://${hdfs_hostname}:8020*
+# ####`defaultFS` *hdfs://${hdfs\_hostname}:8020*
 #
-# Hadoop URI. Used hdfs://${hdfs_hostname}:8020, if not specified.
+# Hadoop URI. Used hdfs://${hdfs\_hostname}:8020, if not specified.
 #
 # ####`environment` true
 #
-# Define environment variable OOZIE_URL on clients.
+# Define environment variable OOZIE\_URL on clients.
 #
 # ####`hdfs_hostname` *localhost*
 #
