@@ -6,13 +6,13 @@ class oozie::server::config {
   $jdbc_src = $::oozie::db ? {
     mysql      => '/usr/share/java/mysql-connector-java.jar',
     mariadb    => '/usr/share/java/mysql-connector-java.jar',
-    postgresql => '/usr/share/java/postgresql-jdbc.jar',
+    postgresql => '/usr/share/java/postgresql.jar',
     default    => undef,
   }
   $jdbc_dst = $::oozie::db ? {
     mysql      => '/var/lib/oozie/mysql-connector-java.jar',
     mariadb    => '/var/lib/oozie/mysql-connector-java.jar',
-    postgresql => '/var/lib/oozie/postgresql-jdbc.jar',
+    postgresql => '/var/lib/oozie/postgresql.jar',
     default    => undef,
   }
 
