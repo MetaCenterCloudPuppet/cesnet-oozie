@@ -6,9 +6,7 @@
 #
 # ####`db` *derby*
 #
-# Database type. Values can be *derby*, *mysql*, *postgres*, or *oracle*.
-#
-# TODO: only Derby supported for now
+# Database type. Values can be **derby**, **mysql**, **postgres**, or **oracle**.
 #
 # ####`db_host` *localhost*
 #
@@ -203,6 +201,7 @@ class oozie (
         'oozie.service.JPAService.jdbc.driver' => 'com.mysql.jdbc.Driver',
         'oozie.service.JPAService.jdbc.url' => "jdbc:mysql://${db_host}:3306/${db_name}",
         'oozie.service.JPAService.jdbc.username' => $db_user,
+        'oozie.service.JPAService.jdbc.password' => $db_password,
       }
     }
     'postgresql': {
@@ -210,6 +209,7 @@ class oozie (
         'oozie.service.JPAService.jdbc.driver' => 'org.postgresql.Driver',
         'oozie.service.JPAService.jdbc.url' => "jdbc:postgresql://${db_host}:5432/${db_name}",
         'oozie.service.JPAService.jdbc.username' => $db_user,
+        'oozie.service.JPAService.jdbc.password' => $db_password,
       }
     }
     'oracle': {
@@ -217,13 +217,6 @@ class oozie (
         'oozie.service.JPAService.jdbc.driver' => 'oracle.jdbc.OracleDriver<',
         'oozie.service.JPAService.jdbc.url' => "jdbc:oracle:thin:@//${db_host}:1521/${db_name}",
         'oozie.service.JPAService.jdbc.username' => $db_user,
-      }
-    }
-  }
-
-  if $db =~ /^(mysql|mariadb|postgresql|oracle)$/ {
-    if $db_password {
-      $db_pw_properties = {
         'oozie.service.JPAService.jdbc.password' => $db_password,
       }
     }
@@ -258,5 +251,5 @@ DEFAULT
     }
   }
 
-  $_properties = merge($dyn_properties, $db_properties, $db_pwd_properties, $sec_properties, $https_properties, $properties)
+  $_properties = merge($dyn_properties, $db_properties, $sec_properties, $https_properties, $properties)
 }

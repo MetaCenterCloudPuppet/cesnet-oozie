@@ -7,6 +7,9 @@
     * [Setup requirements](#setup-requirements)
     * [Beginning with oozie](#beginning-with-oozie)
 4. [Usage - Configuration options and additional functionality](#usage)
+    * [MySQL](#mysql)
+    * [PostgreSQL](#postgresql)
+    * [Security](#security)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
@@ -40,14 +43,14 @@ Supported are:
  * alternatives are used between http/https for */etc/oozie/tomcat-conf*
 * Files modified:
  * */etc/oozie/conf.\**
- * */var/lib/oozie/ext-2.2*: *ext-2.2.zip* is downloadd and extracted to */var/lib/oozie*. If the file is already available locally at */var/lib/oozie/ext-2.2.zip* (or the directory */var/lib/oozie/ext-2.2* already exists), the file is not downloaded.
+ * */var/lib/oozie/ext-2.2*: *ext-2.2.zip* is downloaded and extracted to */var/lib/oozie*. If the file is already available locally at */var/lib/oozie/ext-2.2.zip* (or the directory */var/lib/oozie/ext-2.2* already exists), the file is not downloaded.
  * */var/lib/oozie/\*.jar*: JDBC files are copied from */usr/share/java* according to configured database type in *db* parameter
  * */etc/profile.d/oozie.\**: created for client by default
-* (TODO) Database schema imported: according to the selected database type
+* Database schema imported: according to the selected database type
 * Services:
  * *oozie*
-* Helper Files: */var/lib/oozie/.puppet-oozie-setup*, */var/lib/hadoop-hdfs/.puppet-oozie-dir-created*
-* Secret Files (keytabs, certificates): some files are copied to oozi home directory */var/lib/oozie*
+* Helper Files: */var/lib/oozie/.puppet-oozie-setup*, */var/lib/oozie/.puppet-oozie-schema-created*, */var/lib/hadoop-hdfs/.puppet-oozie-dir-created*
+* Secret Files (keytabs, certificates): some files are copied to oozie home directory */var/lib/oozie*
 * HDFS directory and its content: */user/oozie*
 
 <a name="setup-requirements"></a>
@@ -57,39 +60,22 @@ There are several known or intended limitations in this module.
 
 Be aware of:
 
-* **Repositories** - see cesnet-hadoop module Setup Requirements for details
+* **Repositories**: see cesnet-hadoop module Setup Requirements for details
+
+* **No Database Setup**: there is no database setup in this module, only the schema is imported. See [Usage](#usage) for examples, how to use cesnet-oozie module with puppetlabs database modules.
 
 * **Secure mode**: keytabs must be prepared in /etc/security/keytabs/ (see *realm* parameter)
 
 * **HTTPS**: keystore must be prepared in *https\_keystore*
 
+* **No inter-node dependencies**
+
 <a name="beginning-with-oozie"></a>
 ### Beginning with oozie
 
-Basic example without security: configured Hadoop cluster without security is needed.
+Basic example without security: configured Hadoop cluster without security is needed. You will also need to add permissions for Oozie to Hadoop.
 
     hdfs_hostname=...
-    
-    class{'oozie':
-      defaultFS => "hdfs://${hdfs_hostname}:8020",
-      realm     => '',
-    }
-    
-    node default {
-      include oozie::server
-      include oozie::client
-      include oozie::hdfs
-    }
-
-<a name="usage"></a>
-## Usage
-
-<a name="security"></a>
-### Security
-
-You will also need to add permissions for Oozie to Hadoop. Optionally also HTTPS can be enabled.
-
-**Example**:
 
     class{'hadoop':
       ...
@@ -103,7 +89,112 @@ You will also need to add permissions for Oozie to Hadoop. Optionally also HTTPS
       ...
     }
 
-    hdfs_hostname=...
+    class{'oozie':
+      defaultFS => "hdfs://${hdfs_hostname}:8020",
+      realm     => '',
+    }
+
+    node default {
+      include oozie::server
+      include oozie::client
+      include oozie::hdfs
+
+      Class['hadoop::namenode::service'] -> Class['oozie::hdfs']
+    }
+
+Note: As you can see in the example, the *oozie::hdfs*, which creates the HDFS directories, requires running HDFS namenode.
+
+The class *oozie::server::config* requires also fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. But with multi-node cluster puppetdb or other method may be needed for that.
+
+<a name="usage"></a>
+## Usage
+
+It is recommended to use real database backend. See following sections [MySQL](#mysql), and [PostgreSQL](#postgresql). If choosing Oracle, you will also need to copy JDBC jar file to */var/lib/oozie*.
+
+Note: When changing database type and creating new schema, the puppet helper file */var/lib/oozie/.puppet-oozie-schema-created* needs to be removed, or you can create the new schema manually:
+
+    su oozie -s /bin/bash
+    /usr/lib/oozie/bin/ooziedb.sh create -run
+
+Note 2: You can override any module presets by the properties:
+
+    class{'oozie':
+      ...
+      properties => {
+        'oozie.service.JPAService.jdbc.driver' => 'my.custom.jdbc.Driver',
+        'oozie.service.JPAService.jdbc.url' => 'jdbc:mysql://myserver:myport/oozie'
+      },
+      ...
+    }
+
+<a name="mysql"></a>
+### MySQL
+
+**Example MySQL**: Oozie with MySQL, using puppetlabs-mysql module:
+
+    class{'oozie':
+      ...
+      db => 'mysql',
+      db_password => 'ooziepassword',
+    }
+
+    node ... {
+      class { 'mysql::server':
+        root_password    => 'strongpassword',
+      }
+
+      mysql::db { 'oozie':
+        user     => 'oozie',
+        password => 'ooziepassword',
+        host     => 'localhost',
+        grant    => ['CREATE', 'INDEX', 'SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+      }
+
+      class { 'mysql::bindings':
+        java_enable => true,
+      }
+
+      Class['mysql::bindings'] -> Class['oozie::server::config']
+      Mysql::Db['oozie'] -> Class['oozie::server::service']
+    }
+
+As you can see, MySQL JDBC driver needs to be available for setup class *oozie::server::config* and the database needs to be available for startup class *oozie::server::service*.
+
+<a name="postgresql"></a>
+### PostgreSQL
+
+**Example PostgreSQL**: Oozie with PostgreSQL, using puppetlabs-postgresql module:
+
+    class{'oozie':
+      ...
+      db => 'postgresql',
+      db_password => 'ooziepassword',
+    }
+
+    node ... {
+      class { 'postgresql::server':
+        listen_addresses => 'localhost',
+      }
+
+      postgresql::server::db { 'oozie':
+        user     => 'oozie',
+        password => postgresql_password('oozie', 'ooziepassword'),
+      }
+
+      include postgresql::lib::java
+
+      Class['postgresql::lib::java'] -> Class['oozie::server::config']
+      Postgresql::Server::Db['oozie'] -> Class['oozie::server::service']
+    }
+
+As you can see, PostgreSQL JDBC driver needs to be available for setup class *oozie::server::config* and the database needs to be available for startup class *oozie::server::service*.
+
+<a name="security"></a>
+### Security
+
+Optionally also HTTPS can be enabled.
+
+**Example**:
 
     class{'oozie':
       ...
@@ -114,7 +205,7 @@ You will also need to add permissions for Oozie to Hadoop. Optionally also HTTPS
 
 Note: the class *oozie::hdfs* creates the directory on HDFS. With enabled security, it must be included at HDFS namenode, or additional namenode keytab must exists.
 
-Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.rules*. The default value is needed when using cross-realm authentization:
+Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.rules*. The default value is needed only when using cross-realm authentication:
 
     properties => {
       'oozie.authentication.kerberos.name.rules' => '::undef',
@@ -125,9 +216,7 @@ Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.ru
 
 ####`db` *derby*
 
-Database type. Values can be *derby*, *mysql*, *postgres*, or *oracle*.
-
-TODO: only Derby supported for now
+Database type. Values can be **derby**, **mysql**, **postgresql**, or **oracle**.
 
 ####`db_host` *localhost*
 
@@ -155,7 +244,7 @@ Define environment variable OOZIE\_URL on clients.
 
 ####`hdfs_hostname` *localhost*
 
-Hadoop namenode. Not needed, you can use *defautFS* instead.
+Hadoop namenode. Not needed, you can use *defaultFS* instead.
 
 ####`https` *false*
 
