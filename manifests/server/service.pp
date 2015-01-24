@@ -1,7 +1,7 @@
 # == Class oozie::server::service
 #
 class oozie::server::service {
-  $touchfile = '/var/lib/oozie/.puppet-schema-created'
+  $touchfile = '/var/lib/oozie/.puppet-oozie-schema-created'
 
   exec { 'oozie-schema':
     command => "/usr/lib/oozie/bin/ooziedb.sh create -run && touch ${touchfile}",
