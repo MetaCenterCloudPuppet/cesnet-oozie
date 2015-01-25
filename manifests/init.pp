@@ -38,7 +38,7 @@
 #
 # ####`hdfs_hostname` *localhost*
 #
-# Hadoop namenode. Not needed, you can use *defautFS* instead.
+# Hadoop namenode. Not needed, you can use *defaultFS* instead.
 #
 # ####`https` *false*
 #
