@@ -66,7 +66,7 @@ Be aware of:
 
 * **Secure mode**: keytabs must be prepared in /etc/security/keytabs/ (see *realm* parameter)
 
-* **HTTPS**: keystore must be prepared in *https\_keystore*
+* **HTTPS**: HTTP/&lt;HOST&gt; keytab must be available, keystore must be prepared in *https\_keystore*, and signature secret file in */etc/security/http-auth-signature-secret*
 
 * **No inter-node dependencies**
 
@@ -193,6 +193,8 @@ As you can see, PostgreSQL JDBC driver needs to be available for setup class *oo
 ### Security
 
 Optionally also HTTPS can be enabled.
+
+Security files must be prepared on proper places (see [Requirements](#requirements)). But there can be used files from Hadoop. Keystore passphrase should not differ from key passphrase.
 
 **Example**:
 

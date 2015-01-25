@@ -69,5 +69,12 @@ class oozie::server::config {
       mode   => '0400',
       source => $::oozie::https_keystore,
     }
+
+    file { "${::oozie::oozie_homedir}/http-auth-signature-secret":
+      owner  => 'oozie',
+      group  => 'oozie',
+      mode   => '0400',
+      source => '/etc/security/http-auth-signature-secret',
+    }
   }
 }
