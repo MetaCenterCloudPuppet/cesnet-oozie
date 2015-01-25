@@ -7,6 +7,23 @@
   "source": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie",
   "project_page": "https://github.com/MetaCenterCloudPuppet",
   "issues_url": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie/issues",
+  "tags": ["hadoop", "oozie"],
+  "operatingsystem_support": [
+    {
+    "operatingsystem": "Debian",
+    "operatingsystemrelease": ["7"]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": "3.x"
+    }
+  ],
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
