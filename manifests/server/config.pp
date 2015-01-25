@@ -47,6 +47,14 @@ class oozie::server::config {
     path    => $path,
   }
 
+  $adminusers = $::oozie::adminusers
+  file { "${::oozie::oozie_homedir}/adminusers.txt":
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('oozie/adminusers.txt.erb'),
+  }
+
   if $::oozie::realm {
     file { '/etc/security/keytab/oozie.service.keytab':
       owner => 'oozie',

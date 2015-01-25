@@ -216,6 +216,10 @@ Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.ru
 <a name="parameters"></a>
 ### Parameters
 
+####`adminusers` undef
+
+Administrator users.
+
 ####`db` *derby*
 
 Database type. Values can be **derby**, **mysql**, **postgresql**, or **oracle**.

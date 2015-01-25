@@ -4,9 +4,13 @@
 #
 # === Parameters
 #
+# ####`adminusers` undef
+#
+# Administrator users.
+#
 # ####`db` *derby*
 #
-# Database type. Values can be **derby**, **mysql**, **postgres**, or **oracle**.
+# Database type. Values can be **derby**, **mysql**, **postgresql**, or **oracle**.
 #
 # ####`db_host` *localhost*
 #
@@ -53,6 +57,7 @@
 # Kerberos realm. Empty string, if the security is disabled.
 #
 class oozie (
+  $adminusers = undef,
   $db = 'derby',
   $db_host = 'localhost',
   $db_name = 'oozie',
@@ -69,6 +74,7 @@ class oozie (
   $realm,
 ) inherits ::oozie::params {
 
+  if $adminusers { validate_array($adminusers) }
   validate_string($db)
   validate_string($db_host)
   validate_string($db_name)
@@ -77,6 +83,7 @@ class oozie (
   validate_bool($https)
   validate_bool($perform)
   validate_hash($properties)
+  if $realm { validate_string($realm) }
 
   if $defaultFS {
     $_defaultFS = $defaultFS
