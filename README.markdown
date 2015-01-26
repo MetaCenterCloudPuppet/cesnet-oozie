@@ -98,13 +98,9 @@ Basic example without security: configured Hadoop cluster without security is ne
       include oozie::server
       include oozie::client
       include oozie::hdfs
-
-      Class['hadoop::namenode::service'] -> Class['oozie::hdfs']
     }
 
-Note: As you can see in the example, the *oozie::hdfs*, which creates the HDFS directories, requires running HDFS namenode.
-
-The class *oozie::server::config* requires also fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. But with multi-node cluster puppetdb or other method may be needed for that.
+Note: The class *oozie::server::config* requires fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. But with multi-node cluster puppetdb or other method may be needed for that.
 
 <a name="usage"></a>
 ## Usage
