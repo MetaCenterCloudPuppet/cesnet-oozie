@@ -221,7 +221,7 @@ class oozie (
     }
     'oracle': {
       $db_properties = {
-        'oozie.service.JPAService.jdbc.driver' => 'oracle.jdbc.OracleDriver<',
+        'oozie.service.JPAService.jdbc.driver' => 'oracle.jdbc.OracleDriver',
         'oozie.service.JPAService.jdbc.url' => "jdbc:oracle:thin:@//${db_host}:1521/${db_name}",
         'oozie.service.JPAService.jdbc.username' => $db_user,
         'oozie.service.JPAService.jdbc.password' => $db_password,
