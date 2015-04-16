@@ -1,5 +1,5 @@
-<% if @realm -%>
-export OOZIE_URL='https://<%= @fqdn -%>:11443/oozie'
+<% if @realm and @realm != '' -%>
+export OOZIE_URL='https://<%= @oozie_hostname -%>:11443/oozie'
 <% else -%>
-export OOZIE_URL='http://<%= @fqdn -%>:11000/oozie'
+export OOZIE_URL='http://<%= @oozie_hostname -%>:11000/oozie'
 <% end -%>

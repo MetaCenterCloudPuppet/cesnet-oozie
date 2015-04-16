@@ -52,6 +52,10 @@
 #
 # Certificates keystore file password.
 #
+# ####`oozie_hostname` $::fqdn
+#
+# Oozie server hostname. Needed when some oozie client is also on separated node.
+#
 # ####`realm` (required)
 #
 # Kerberos realm. Empty string, if the security is disabled.
@@ -71,6 +75,7 @@ class oozie (
   $https_keystore_password = 'changeit',
   $perform = false,
   $properties = {},
+  $oozie_hostname = $::fqdn,
   $realm,
 ) inherits ::oozie::params {
 

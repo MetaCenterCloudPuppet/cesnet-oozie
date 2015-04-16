@@ -3,6 +3,7 @@
 # Oozie client setup. Shell profile files are created or removed.
 #
 class oozie::client::config {
+  $oozie_hostname = $oozie::oozie_hostname
   $realm = $oozie::realm
 
   if $oozie::environment {

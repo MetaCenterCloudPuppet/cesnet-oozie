@@ -260,6 +260,10 @@ Certificates keystore file.
 
 Certificates keystore file password.
 
+####`oozie_hostname` $::fqdn
+
+Oozie server hostname.
+
 ####`realm` (required)
 
 Kerberos realm. Empty string, if the security is disabled.
