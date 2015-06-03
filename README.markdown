@@ -29,7 +29,9 @@ This module install Oozie server or client with optional features:
 
 Supported are:
 
-* Debian 7/wheezy (tested on Hadoop 2.5.0)
+* Debian 7/wheezy: Cloudera distribution (tested with CDH 5.3.1, Oozie 4.0.0)
+* Ubuntu 14/trusty: Cloudera distribution
+* RHEL 6, CentOS 6, Scientific Linux 6: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
 
 <a name="setup"></a>
 ## Setup

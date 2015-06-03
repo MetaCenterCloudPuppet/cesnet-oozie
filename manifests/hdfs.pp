@@ -14,8 +14,8 @@ class oozie::hdfs {
     ensure => present,
     system => true,
   }
-  case $::osfamily {
-    'RedHat': {
+  case "${::osfamily}-${::operatingsystem}" {
+    /RedHat-Fedora/: {
       user { 'oozie':
         ensure     => present,
         system     => true,
@@ -27,7 +27,7 @@ class oozie::hdfs {
         shell      => '/sbin/nologin',
       }
     }
-    'Debian': {
+    /Debian|RedHat/: {
       user { 'oozie':
         ensure     => present,
         system     => true,
@@ -40,7 +40,7 @@ class oozie::hdfs {
       }
     }
     default: {
-      notice("${::os_family} not supported")
+      notice("${::operatingsystem} (${::os_family}) not supported")
     }
   }
   Group['oozie'] -> User['oozie']

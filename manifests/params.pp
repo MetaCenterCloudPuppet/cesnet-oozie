@@ -4,45 +4,47 @@
 # It sets variables according to platform.
 #
 class oozie::params {
-  $alternatives = $::osfamily ? {
-    debian => 'cluster',
-    redhat => undef,
+  $alternatives = "${::osfamily}-${::operatingsystem}" ? {
+    /RedHat-Fedora/ => undef,
+    # https://github.com/puppet-community/puppet-alternatives/issues/18
+    /RedHat/        => '',
+    /Debian/        => 'cluster',
   }
 
-  $alternatives_ssl = $::osfamily ? {
-    debian => 'oozie-tomcat-conf',
-    redhat => undef,
+  $alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
+    /RedHat-Fedora/ => false,
+    /Debian|RedHat/ => true,
   }
 
-  $confdir = $::osfamily ? {
-    debian => '/etc/oozie/conf',
-    redhat => '/etc/oozie',
+  $confdir = "${::osfamily}-${::operatingsystem}" ? {
+    /RedHat-Fedora/ => '/etc/oozie',
+    /Debian|RedHat/ => '/etc/oozie/conf',
   }
 
   $daemon = 'oozie'
 
-  $hadoop_confdir = $::osfamily ? {
-    debian => '/etc/hadoop/conf',
-    redhat => '/etc/hadoop',
+  $hadoop_confdir = "${::osfamily}-${::operatingsystem}" ? {
+    /RedHat-Fedora/ => '/etc/hadoop',
+    /Debian|RedHat/ => '/etc/hadoop/conf',
   }
 
   $oozie_homedir = '/var/lib/oozie'
 
-  case $::osfamily {
-    'debian': {
-      $packages = {
-        'server' => 'oozie',
-        'client' => 'oozie-client',
-      }
-    }
-    'redhat': {
+  case "${::osfamily}-${::operatingsystem}" {
+    /RedHat-Fedora/: {
       $packages = {
         'server' => 'oozie',
         'client' => 'oozie',
       }
     }
+    /Debian|RedHat/: {
+      $packages = {
+        'server' => 'oozie',
+        'client' => 'oozie-client',
+      }
+    }
     default: {
-      fail("${::operatingsystem} not supported")
+      fail("${::operatingsystem} (${::osfamily}) not supported")
     }
   }
 
