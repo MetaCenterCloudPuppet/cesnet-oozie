@@ -4,9 +4,25 @@
 #
 # === Parameters
 #
+# [*acl*] undef
+#
+# Set to true, if setfacl command is available and /etc/hadoop is on filesystem supporting POSIX ACL.
+#
+# It is used to set privileges of ssl-server.xml and ssl-client.xml for Oozie. If the POSIX ACL is not supported, disable this parameter also in cesnet-hadoop puppet module.
+#
 # ####`adminusers` undef
 #
 # Administrator users.
+#
+# ####`alternatives` "cluster"
+#
+# Use alternatives to switch configuration. It can be used only when supported (like with Cloudera).
+#
+# ####`alternatives_ssl` "oozie-tomcat-deployment"
+#
+# Alternatives configuration name to switch tomcat http/https configuration. It must have proper value according to the Oozie version used (default value is valid for Cloudera 5.4.2).
+#
+# Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older alternative name has been "oozie-tomcat-conf".
 #
 # ####`db` *derby*
 #
@@ -56,12 +72,21 @@
 #
 # Oozie server hostname. Needed when some oozie client is also on separated node.
 #
+# ####`oozie_sharelib` '/usr/lib/oozie/oozie-sharelib-yarn'
+#
+# Path to oozie sharelib for setup.
+#
+# Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older path has been '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz'.
+#
 # ####`realm` (required)
 #
 # Kerberos realm. Empty string, if the security is disabled.
 #
 class oozie (
+  $acl = undef,
   $adminusers = undef,
+  $alternatives = $::oozie::params::alternatives,
+  $alternatives_ssl = $::oozie::params::alternatives_ssl,
   $db = 'derby',
   $db_host = 'localhost',
   $db_name = 'oozie',
@@ -76,6 +101,7 @@ class oozie (
   $perform = false,
   $properties = {},
   $oozie_hostname = $::fqdn,
+  $oozie_sharelib = $::oozie::params::oozie_sharelib,
   $realm,
 ) inherits ::oozie::params {
 

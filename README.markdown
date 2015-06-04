@@ -10,6 +10,7 @@
     * [MySQL](#mysql)
     * [PostgreSQL](#postgresql)
     * [Security](#security)
+    * [Compatibility](#compatibility)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
@@ -29,7 +30,7 @@ This module install Oozie server or client with optional features:
 
 Supported are:
 
-* Debian 7/wheezy: Cloudera distribution (tested with CDH 5.3.1, Oozie 4.0.0)
+* Debian 7/wheezy: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
 * Ubuntu 14/trusty: Cloudera distribution
 * RHEL 6, CentOS 6, Scientific Linux 6: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
 
@@ -211,12 +212,30 @@ Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.ru
       'oozie.authentication.kerberos.name.rules' => '::undef',
     }
 
+<a name="compatibility"></a>
+#### Compatibility
+
+For using with older versions of Cloudera (like CDH 5.3.1 / Oozie 4.0.0), you need to change parameters *alternatives_ssl* and *oozie_sharelib*. Defaults values are tested with CDH 5.4.2 / Oozie 4.1.0:
+
+    alternatives_ssl => 'oozie-tomcat-conf',
+    oozie_sharelib =>  '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz',
+
 <a name="parameters"></a>
 ### Parameters
 
 ####`adminusers` undef
 
 Administrator users.
+
+####`alternatives` "cluster"
+
+Use alternatives to switch configuration. It can be used only when supported (like with Cloudera).
+
+####`alternatives_ssl` "oozie-tomcat-deployment"
+
+Alternatives configuration name to switch tomcat http/https configuration. It must have proper value according to the Oozie version used (default value is valid for Cloudera 5.4.2).
+
+Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older alternative name has been "oozie-tomcat-conf".
 
 ####`db` *derby*
 
@@ -264,12 +283,17 @@ Certificates keystore file password.
 
 ####`oozie_hostname` $::fqdn
 
-Oozie server hostname.
+Oozie server hostname. Needed when some oozie client is also on separated node.
+
+####`oozie_sharelib` '/usr/lib/oozie/oozie-sharelib-yarn'
+
+Path to oozie sharelib for setup.
+
+Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older path has been '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz'.
 
 ####`realm` (required)
 
 Kerberos realm. Empty string, if the security is disabled.
-
 
 <a name="reference"></a>
 ## Reference

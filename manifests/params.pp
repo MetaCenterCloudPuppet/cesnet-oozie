@@ -12,8 +12,8 @@ class oozie::params {
   }
 
   $alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
-    /RedHat-Fedora/ => false,
-    /Debian|RedHat/ => true,
+    /RedHat-Fedora/ => '',
+    /Debian|RedHat/ => 'oozie-tomcat-deployment',
   }
 
   $confdir = "${::osfamily}-${::operatingsystem}" ? {
@@ -29,6 +29,8 @@ class oozie::params {
   }
 
   $oozie_homedir = '/var/lib/oozie'
+
+  $oozie_sharelib = '/usr/lib/oozie/oozie-sharelib-yarn'
 
   case "${::osfamily}-${::operatingsystem}" {
     /RedHat-Fedora/: {

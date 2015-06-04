@@ -27,7 +27,7 @@ class oozie::server::config {
   $touchfile_setup = '/var/lib/oozie/.puppet-oozie-setup'
   $path = '/sbin:/usr/sbin:/bin:/usr/bin'
   exec { 'oozie-setup':
-    command => "oozie-setup sharelib create -fs ${::oozie::_defaultFS} -locallib /usr/lib/oozie/oozie-sharelib-yarn.tar.gz && touch ${touchfile_setup}",
+    command => "oozie-setup sharelib create -fs ${::oozie::_defaultFS} -locallib ${::oozie::oozie_sharelib} && touch ${touchfile_setup}",
     path    => $path,
     creates => $touchfile_setup,
     require => [File["${::oozie::confdir}/oozie-site.xml"], File["${::oozie::confdir}/oozie-env.sh"]],
@@ -83,6 +83,22 @@ class oozie::server::config {
       group  => 'oozie',
       mode   => '0400',
       source => '/etc/security/http-auth-signature-secret',
+    }
+
+    if $::oozie::acl and $::oozie::acl == true {
+      exec { 'setfacl-ssl-oozie':
+        command => "setfacl -m u:oozie:r ${::oozie::hadoop_confdir}/ssl-server.xml ${::oozie::hadoop_confdir}/ssl-client.xml && touch ${::oozie::oozie_homedir}/.puppet-ssl-facl",
+        path    => '/sbin:/usr/sbin:/bin:/usr/bin',
+        creates => "${::oozie::oozie_homedir}/.puppet-ssl-facl",
+        require => [
+          File["${::oozie::hadoop_confdir}/ssl-client.xml"],
+          File["${::oozie::hadoop_confdir}/ssl-server.xml"],
+        ],
+        before  => Exec['oozie-setup'],
+      }
+
+      # ssl-client.xml and ssl-server.xml
+      Class['hadoop::common::config'] -> Exec['setfacl-ssl-oozie']
     }
   }
 }
