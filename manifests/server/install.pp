@@ -5,6 +5,7 @@ class oozie::server::install {
   contain oozie::common::postinstall
 
   ensure_packages($oozie::packages['server'])
+  ensure_packages($oozie::packages['unzip'])
 
   if $::oozie::alternatives_ssl and $::oozie::alternatives_ssl != '' {
     if $::oozie::https {

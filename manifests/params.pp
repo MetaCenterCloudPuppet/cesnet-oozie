@@ -37,12 +37,14 @@ class oozie::params {
       $packages = {
         'server' => 'oozie',
         'client' => 'oozie',
+        'unzip'  => 'unzip',
       }
     }
     /Debian|RedHat/: {
       $packages = {
         'server' => 'oozie',
         'client' => 'oozie-client',
+        'unzip'  => 'unzip',
       }
     }
     default: {
