@@ -1,4 +1,4 @@
-<% if @realm and @realm != '' -%>
+<% if @https -%>
 export OOZIE_URL='https://<%= @oozie_hostname -%>:11443/oozie'
 <% else -%>
 export OOZIE_URL='http://<%= @oozie_hostname -%>:11000/oozie'
