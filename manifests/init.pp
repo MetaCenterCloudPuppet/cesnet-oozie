@@ -22,7 +22,7 @@ class oozie (
   $properties = {},
   $oozie_hostname = $::fqdn,
   $oozie_sharelib = $::oozie::params::oozie_sharelib,
-  $realm,
+  $realm = '',
 ) inherits ::oozie::params {
 
   if $adminusers { validate_array($adminusers) }
@@ -181,7 +181,7 @@ class oozie (
   }
 
   # Hadoop Authentication
-  if $realm {
+  if $realm and $realm != '' {
     $sec_properties = {
       'local.realm' => $realm,
       'oozie.service.AuthorizationService.security.enabled' => true,

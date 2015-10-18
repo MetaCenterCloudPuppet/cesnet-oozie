@@ -355,9 +355,11 @@ Path to oozie sharelib for setup. Default: '/usr/lib/oozie/oozie-sharelib-yarn'.
 
 Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older path has been '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz'.
 
-####`realm` (required)
+####`realm`
 
-Kerberos realm. Empty string, if the security is disabled.
+Enable security and Kerberos realm to use. Default: ''.
+
+Empty string disables the security.
 
 <a name="limitations"></a>
 ## Limitations

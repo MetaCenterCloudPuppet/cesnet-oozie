@@ -1,3 +1,1 @@
-class{'oozie':
-  realm => '',
-}
+include ::oozie

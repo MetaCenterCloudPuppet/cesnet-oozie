@@ -55,7 +55,7 @@ class oozie::server::config {
     content => template('oozie/adminusers.txt.erb'),
   }
 
-  if $::oozie::realm {
+  if $::oozie::realm and $::oozie::realm != '' {
     file { '/etc/security/keytab/oozie.service.keytab':
       owner => 'oozie',
       group => 'oozie',
