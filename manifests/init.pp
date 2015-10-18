@@ -5,7 +5,7 @@
 class oozie (
   $acl = undef,
   $adminusers = undef,
-  $alternatives = $::oozie::params::alternatives,
+  $alternatives = '::default',
   $alternatives_ssl = $::oozie::params::alternatives_ssl,
   $db = 'derby',
   $db_host = 'localhost',

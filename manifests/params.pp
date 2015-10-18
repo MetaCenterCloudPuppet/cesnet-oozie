@@ -4,13 +4,6 @@
 # It sets variables according to platform.
 #
 class oozie::params {
-  $alternatives = "${::osfamily}-${::operatingsystem}" ? {
-    /RedHat-Fedora/ => undef,
-    # https://github.com/puppet-community/puppet-alternatives/issues/18
-    /RedHat/        => '',
-    /Debian/        => 'cluster',
-  }
-
   $alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
     /RedHat-Fedora/ => '',
     /Debian|RedHat/ => 'oozie-tomcat-deployment',
