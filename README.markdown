@@ -1,42 +1,38 @@
-## Apacha Oozie Puppet Module
+## Apache Oozie Puppet Module
 
 [![Build Status](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie.svg?branch=master)](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie)
 
 #### Table of Contents
 
-1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with oozie](#setup)
+1. [Module Description - What the module does and why it is useful](#module-description)
+2. [Setup - The basics of getting started with oozie](#setup)
     * [What oozie affects](#what-oozie-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with oozie](#beginning-with-oozie)
-4. [Usage - Configuration options and additional functionality](#usage)
+3. [Usage - Configuration options and additional functionality](#usage)
     * [MySQL](#mysql)
     * [PostgreSQL](#postgresql)
     * [Security](#security)
     * [Compatibility](#compatibility)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+    * [Classes](#classes)
+    * [Parameters (oozie class)](#parameters)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
-
-<a name="overview"></a>
-## Overview
-
-Oozie module installs Oozie server or client, optionally with enabled security.
 
 <a name="module-description"></a>
 ## Module Description
 
-This module install Oozie server or client with optional features:
+Oozie puppet module installs Oozie server or client, optionally with features:
 
 * security based on Kerberos
 * HTTPS
 
 Supported are:
 
-* Debian 7/wheezy: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
-* Ubuntu 14/trusty: Cloudera distribution
-* RHEL 6, CentOS 6, Scientific Linux 6: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
+* **Debian 7/wheezy**: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
+* **Ubuntu 14/trusty**: Cloudera distribution
+* **RHEL 6 and clones**: Cloudera distribution (tested with CDH 5.4.2, Oozie 4.1.0)
 
 <a name="setup"></a>
 ## Setup
@@ -69,7 +65,7 @@ Be aware of:
 
 * **Repositories**: see cesnet-hadoop module Setup Requirements for details
 
-* **No Database Setup**: there is no database setup in this module, only the schema is imported. See [Usage](#usage) for examples, how to use cesnet-oozie module with puppetlabs database modules.
+* **No Database Setup**: there is no database setup in this module, only the schema is imported. See [Usage](#usage) for examples, how to use cesnet-oozie module for example with puppetlabs database modules.
 
 * **Secure mode**: keytabs must be prepared in /etc/security/keytabs/ (see *realm* parameter)
 
@@ -107,7 +103,7 @@ Basic example without security: configured Hadoop cluster without security is ne
       include oozie::hdfs
     }
 
-Note: The class *oozie::server::config* requires fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. But with multi-node cluster puppetdb or other method may be needed for that.
+Note: The class *oozie::server::config* requires fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. With multi-node cluster it may be needed to separate setup to more stages.
 
 <a name="usage"></a>
 ## Usage
@@ -224,100 +220,125 @@ For using with older versions of Cloudera (like CDH 5.3.1 / Oozie 4.0.0), you ne
     alternatives_ssl => 'oozie-tomcat-conf',
     oozie_sharelib =>  '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz',
 
-<a name="parameters"></a>
-### Parameters
-
-####`adminusers` undef
-
-Administrator users.
-
-####`alternatives` "cluster"
-
-Use alternatives to switch configuration. It can be used only when supported (like with Cloudera).
-
-####`alternatives_ssl` "oozie-tomcat-deployment"
-
-Alternatives configuration name to switch tomcat http/https configuration. It must have proper value according to the Oozie version used (default value is valid for Cloudera 5.4.2).
-
-Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older alternative name has been "oozie-tomcat-conf".
-
-####`db` *derby*
-
-Database type. Values can be **derby**, **mysql**, **postgresql**, or **oracle**.
-
-####`db_host` *localhost*
-
-Database host.
-
-####`db_name` *oozie*
-
-Database name.
-
-####`db_user` *oozie*
-
-Database user.
-
-####`db_password` (space)
-
-Database password. Oozie will need a space, when using empty password.
-
-####`defaultFS` *hdfs://${hdfs\_hostname}:8020*
-
-Hadoop URI. Used hdfs://${hdfs\_hostname}:8020, if not specified.
-
-####`environment` true
-
-Define environment variable OOZIE\_URL on clients.
-
-####`hdfs_hostname` *localhost*
-
-Hadoop namenode. Not needed, you can use *defaultFS* instead.
-
-####`https` *false*
-
-Enable HTTPS.
-
-####`https_keystore` '/etc/security/server.keystore'
-
-Certificates keystore file.
-
-####`https_keystore_password` 'changeit'
-
-Certificates keystore file password.
-
-####`oozie_hostname` $::fqdn
-
-Oozie server hostname. Needed when some oozie client is also on separated node.
-
-####`oozie_sharelib` '/usr/lib/oozie/oozie-sharelib-yarn'
-
-Path to oozie sharelib for setup.
-
-Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older path has been '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz'.
-
-####`realm` (required)
-
-Kerberos realm. Empty string, if the security is disabled.
-
 <a name="reference"></a>
 ## Reference
 
 <a name="classes"></a>
 ###Classes
 
-* **client**: Oozie Client
- * config
- * install
-* common:
- * config
- * postinstall
-* **server**: Oozie Server
- * config
- * install
- * service
-* **hdfs**: HDFS Initializations
-* init
-* params
+* [**`oozie`**](#class-oozie): Apache Oozie Workflow Scheduler - configure class
+* **`oozie::client`**: Oozie Client
+ * `oozie::config`
+ * `oozie::install`
+* `oozie::common::config`
+* `oozie::common::postinstall`
+* **`oozie::server`**: Oozie Server
+* `oozie::server::config`
+* `oozie::server::install`
+* `oozie::server::service`
+* **`oozie::hdfs`**: HDFS Initializations
+* `oozie::params`
+
+<a name="parameters"></a>
+<a name="class-oozie"></a>
+### Parameters (oozie class)
+
+####`acl`
+
+Determines, if setfacl command is available and /etc/hadoop is on filesystem supporting POSIX ACL. Default: undef.
+
+It is used to set privileges of ssl-server.xml and ssl-client.xml for Oozie. If the POSIX ACL is not supported, disable this parameter also in cesnet-hadoop puppet module.
+
+####`adminusers`
+
+Administrator users. Default: undef.
+
+####`alternatives`
+
+Switches the alternatives used for the configuration. Default: 'cluster' (Debian) or undef.
+
+It can be used only when supported (for example with Cloudera distribution).
+
+####`alternatives_ssl`
+
+Switches the alternatives used for tomcat http/https configuration. Default: 'oozie-tomcat-deployment'.
+
+It must have proper value according to the Oozie version used (default value is valid for Cloudera 5.4.2 and above).
+
+Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older alternative name has been 'oozie-tomcat-conf'.
+
+####`db`
+
+Database type. Default: 'derby'.
+
+Values can be:
+
+* **derby**
+* **mysql**
+* **postgresql**
+* **oracle**.
+
+####`db_host`
+
+Database host. Default: 'localhost'.
+
+####`db_name`
+
+Database name. Default: 'oozie'.
+
+####`db_user`
+
+Database user. Default: 'oozie'.
+
+####`db_password`
+
+Database password. Default: ' ' (space)
+
+Note, Oozie requires a space, when using empty password.
+
+####`defaultFS`
+
+Hadoop URI. Default: undef.
+
+Used *hdfs://${hdfs\_hostname}:8020*, if not specified.
+
+####`environment`
+
+Define environment variable OOZIE\_URL on clients. Default: true.
+
+####`hdfs_hostname`
+
+Hadoop HDFS namenode, if *defaultFS* is not specified. Default: 'localhost'.
+
+It is overridden by *defaultFS*.
+
+####`https`
+
+Enable HTTPS. Default: false.
+
+####`https_keystore`
+
+Certificates keystore file. Default: '/etc/security/server.keystore'.
+
+####`https_keystore_password`
+
+Certificates keystore file password. Default: 'changeit'.
+
+####`oozie_hostname`
+
+Oozie server hostname. Default: $::fqdn.
+
+Needed when any oozie client is also on separated node.
+
+####`oozie_sharelib`
+
+Path to oozie sharelib for setup. Default: '/usr/lib/oozie/oozie-sharelib-yarn'.
+
+Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older path has been '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz'.
+
+####`realm` (required)
+
+Kerberos realm. Empty string, if the security is disabled.
 
 <a name="limitations"></a>
 ## Limitations
@@ -328,5 +349,7 @@ See [Setup Requirements](#setup-requirements) section.
 ## Development
 
 * Repository: [https://github.com/MetaCenterCloudPuppet/cesnet-oozie](https://github.com/MetaCenterCloudPuppet/cesnet-oozie)
-* Testing: [https://github.com/MetaCenterCloudPuppet/hadoop-tests](https://github.com/MetaCenterCloudPuppet/hadoop-tests)
+* Testing:
+ * basic: see *.travis.yml*
+ * vagrant: [https://github.com/MetaCenterCloudPuppet/hadoop-tests](https://github.com/MetaCenterCloudPuppet/hadoop-tests)
 * Email: František Dvořák &lt;valtri@civ.zcu.cz&gt;
