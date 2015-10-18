@@ -14,6 +14,7 @@
     * [PostgreSQL](#postgresql)
     * [Security](#security)
     * [Compatibility](#compatibility)
+    * [Cluster with more HDFS Name nodes](#multinn)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
     * [Classes](#classes)
     * [Parameters (oozie class)](#parameters)
@@ -220,6 +221,23 @@ For using with older versions of Cloudera (like CDH 5.3.1 / Oozie 4.0.0), you ne
     alternatives_ssl => 'oozie-tomcat-conf',
     oozie_sharelib =>  '/usr/lib/oozie/oozie-sharelib-yarn.tar.gz',
 
+<a name="multinn"></a>
+###Cluster with more HDFS Name nodes
+
+If there are used more HDFS namenodes in the Hadoop cluster (high availability, namespaces, ...), it is needed to have 'oozie' system user on all of them to authorization work properly. You could install full Oozie client (using *oozie::client::install*), but just creating the user is enough (using *oozie::user*).
+
+Note, the *oozie::hdfs* class must be used too, but only on one of the HDFS namenodes. It includes the *oozie::user*.
+
+**Example**:
+
+    node <HDFS_NAMENODE> {
+      include oozie::hdfs
+    }
+
+    node <HDFS_OTHER_NAMENODE> {
+      include oozie::user
+    }
+
 <a name="reference"></a>
 ## Reference
 
@@ -238,6 +256,7 @@ For using with older versions of Cloudera (like CDH 5.3.1 / Oozie 4.0.0), you ne
 * `oozie::server::service`
 * **`oozie::hdfs`**: HDFS Initializations
 * `oozie::params`
+* **`oozie::user`**: Create oozie system user
 
 <a name="parameters"></a>
 <a name="class-oozie"></a>
