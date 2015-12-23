@@ -1,7 +1,7 @@
 # == Class oozie::server::install
 #
 class oozie::server::install {
-  include stdlib
+  include ::stdlib
   contain oozie::common::postinstall
 
   ensure_packages($oozie::packages['server'])

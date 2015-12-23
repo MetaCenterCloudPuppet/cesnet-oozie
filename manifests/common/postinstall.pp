@@ -4,6 +4,6 @@
 #
 class oozie::common::postinstall {
   ::hadoop_lib::postinstall{ 'oozie':
-    alternatives => $::oozie::alternatives
+    alternatives => $::oozie::alternatives,
   }
 }

@@ -1,7 +1,7 @@
 # == Class oozie::client::install
 #
 class oozie::client::install {
-  include stdlib
+  include ::stdlib
 
   ensure_packages($oozie::packages['client'])
 }

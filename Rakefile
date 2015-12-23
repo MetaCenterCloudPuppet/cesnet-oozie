@@ -26,6 +26,8 @@ PuppetLint.configuration.disable_80chars
 PuppetLint.configuration.disable_class_inherits_from_params_class
 PuppetLint.configuration.disable_class_parameter_defaults
 PuppetLint.configuration.fail_on_warnings = true
+# false alarms
+PuppetLint.configuration.disable_single_quote_string_with_variables
 
 PuppetLint::RakeTask.new :lint do |config|
   config.ignore_paths = exclude_paths
