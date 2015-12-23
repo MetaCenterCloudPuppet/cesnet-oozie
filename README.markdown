@@ -366,6 +366,8 @@ Empty string disables the security.
 
 See [Setup Requirements](#setup-requirements) section.
 
+Only Puppet 3 can be tested by unit-tests, Puppet 4 can't use custom *site.pp*.
+
 <a name="development"></a>
 ## Development
 
