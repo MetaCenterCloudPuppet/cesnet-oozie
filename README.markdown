@@ -343,6 +343,12 @@ Certificates keystore file. Default: '/etc/security/server.keystore'.
 
 Certificates keystore file password. Default: 'changeit'.
 
+####`hue_hostnames`
+
+Authenticated Apache Hue hostnames. Default: [].
+
+Sets properties *oozie.service.ProxyUserService.proxyuser.hue.hosts* and *oozie.service.ProxyUserService.proxyuser.hue.groups*. They can be overridden by *properties* parameter.
+
 ####`oozie_hostname`
 
 Oozie server hostname. Default: $::fqdn.

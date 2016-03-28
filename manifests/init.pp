@@ -18,6 +18,7 @@ class oozie (
   $https = false,
   $https_keystore = '/etc/security/server.keystore',
   $https_keystore_password = 'changeit',
+  $hue_hostnames = [],
   $perform = false,
   $properties = {},
   $oozie_hostname = $::fqdn,
@@ -209,5 +210,14 @@ DEFAULT
     }
   }
 
-  $_properties = merge($dyn_properties, $db_properties, $sec_properties, $https_properties, $properties)
+  if $hue_hostnames and !empty($hue_hostnames) {
+    $hue_properties = {
+      'oozie.service.ProxyUserService.proxyuser.hue.hosts' => join($hue_hostnames, ','),
+      'oozie.service.ProxyUserService.proxyuser.hue.groups' => '*',
+    }
+  } else {
+    $hue_properties = {}
+  }
+
+  $_properties = merge($dyn_properties, $db_properties, $sec_properties, $https_properties, $hue_properties, $properties)
 }
