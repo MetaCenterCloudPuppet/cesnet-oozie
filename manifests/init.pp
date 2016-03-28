@@ -191,6 +191,8 @@ class oozie (
       #'oozie.service.HadoopAccessorService.keytab.file' => '${user.home}/oozie.keytab',
       'oozie.service.HadoopAccessorService.keytab.file' => '/etc/security/keytab/oozie.service.keytab',
     }
+  } else {
+    $sec_properties = {}
   }
 
   # Oozie Authentication
@@ -208,6 +210,8 @@ DEFAULT
 ",
       'oozie.https.keystore.pass' => $https_keystore_password,
     }
+  } else {
+    $https_properties = {}
   }
 
   if $hue_hostnames and !empty($hue_hostnames) {
