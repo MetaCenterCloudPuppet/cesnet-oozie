@@ -280,11 +280,9 @@ It can be used only when supported (for example with Cloudera distribution).
 
 ####`alternatives_ssl`
 
-Switches the alternatives used for tomcat http/https configuration. Default: 'oozie-tomcat-deployment'.
+Switches the alternatives used for tomcat http/https configuration. Default: 'oozie-tomcat-conf'.
 
-It must have proper value according to the Oozie version used (default value is valid for Cloudera 5.4.2 and above).
-
-Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the older alternative name has been 'oozie-tomcat-conf'.
+It must have proper value according to the Oozie version used. There has been several changes in Cloudera. Other valid value may be *oozie-tomcat-deployment*.
 
 ####`db`
 

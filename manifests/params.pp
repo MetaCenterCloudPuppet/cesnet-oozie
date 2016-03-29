@@ -6,7 +6,7 @@
 class oozie::params {
   $alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
     /RedHat-Fedora/ => '',
-    /Debian|RedHat/ => 'oozie-tomcat-deployment',
+    /Debian|RedHat/ => 'oozie-tomcat-conf',
   }
 
   $confdir = "${::osfamily}-${::operatingsystem}" ? {
