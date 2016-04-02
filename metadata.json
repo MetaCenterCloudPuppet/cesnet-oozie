@@ -1,17 +1,17 @@
 {
   "name": "cesnet-oozie",
-  "version": "0.9.3",
+  "version": "0.10.0",
   "author": "Frantisek Dvorak <valtri@civ.zcu.cz>",
   "summary": "Setup Apache Oozie Workflow Scheduler",
   "license": "MIT",
   "source": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie",
-  "project_page": "https://github.com/MetaCenterCloudPuppet",
+  "project_page": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie",
   "issues_url": "https://github.com/MetaCenterCloudPuppet/cesnet-oozie/issues",
   "tags": ["hadoop", "oozie"],
   "operatingsystem_support": [
     {
       "operatingsystem": "CentOS",
-      "operatingsystemrelease": ["6"]
+      "operatingsystemrelease": ["6", "7"]
     },
     {
       "operatingsystem": "Debian",
@@ -19,11 +19,11 @@
     },
     {
       "operatingsystem": "RedHat",
-      "operatingsystemrelease": ["6"]
+      "operatingsystemrelease": ["6", "7"]
     },
     {
       "operatingsystem": "Scientific",
-      "operatingsystemrelease": ["6"]
+      "operatingsystemrelease": ["6", "7"]
     },
     {
       "operatingsystem": "Ubuntu",
