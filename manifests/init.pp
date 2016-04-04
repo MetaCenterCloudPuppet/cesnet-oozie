@@ -86,6 +86,7 @@ class oozie (
   }
 
   $descriptions = {
+    'oozie.credentials.credentialclasses' => 'To use kerberized Hive and HBase',
     'oozie.system.id' => 'The Oozie system ID',
     'oozie.systemmode' => 'System mode for Oozie at startup',
     'oozie.service.AuthorizationService.security.enabled' => 'Specifies whether security (user name/admin role) is enabled or not
@@ -185,6 +186,7 @@ class oozie (
   if $realm and $realm != '' {
     $sec_properties = {
       'local.realm' => $realm,
+      'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials',
       'oozie.service.AuthorizationService.security.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.principal' => "\${user.name}/${::fqdn}@\${local.realm}",
