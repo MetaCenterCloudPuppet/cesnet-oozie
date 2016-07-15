@@ -323,6 +323,15 @@ Used *hdfs://${hdfs\_hostname}:8020*, if not specified.
 
 Define environment variable OOZIE\_URL on clients. Default: true.
 
+####`gui_enable`
+
+Downloads and deploys Oozie extras GUI. Default: true.
+
+There may be reasons to disable it:
+
+* Its license is GPL (probably incompatible and less free than Apache 2.0, but IANAL)
+* GUI is not compatible with Java >= 8 (tested with CDH <= 5.7.1, Oozie <= 4.1.0)
+
 ####`hdfs_hostname`
 
 Hadoop HDFS namenode, if *defaultFS* is not specified. Default: 'localhost'.

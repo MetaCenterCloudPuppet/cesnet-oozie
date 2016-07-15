@@ -14,6 +14,7 @@ class oozie (
   $db_password = ' ',
   $defaultFS = undef,
   $environment = true,
+  $gui_enable = true,
   $hdfs_hostname = 'localhost',
   $https = false,
   $https_keystore = '/etc/security/server.keystore',

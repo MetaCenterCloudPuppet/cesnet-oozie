@@ -33,18 +33,20 @@ class oozie::server::config {
     require => [File["${::oozie::confdir}/oozie-site.xml"], File["${::oozie::confdir}/oozie-env.sh"]],
   }
 
-  exec {'download-ext-2.2':
-    command => 'wget -P /var/lib/oozie http://archive.cloudera.com/gplextras/misc/ext-2.2.zip || wget -P /var/lib/oozie http://scientific.zcu.cz/repos/hadoop/contrib/ext-2.2.zip',
-    creates => '/var/lib/oozie/ext-2.2',
-    path    => $path,
-    unless  => 'test -s /var/lib/oozie/ext-2.2.zip',
-  }
-  ->
-  exec {'extract-ext-2.2':
-    command => 'unzip ext-2.2.zip',
-    creates => '/var/lib/oozie/ext-2.2',
-    cwd     => '/var/lib/oozie',
-    path    => $path,
+  if $::oozie::gui_enable {
+    exec {'download-ext-2.2':
+      command => 'wget -P /var/lib/oozie http://archive.cloudera.com/gplextras/misc/ext-2.2.zip || wget -P /var/lib/oozie http://scientific.zcu.cz/repos/hadoop/contrib/ext-2.2.zip',
+      creates => '/var/lib/oozie/ext-2.2',
+      path    => $path,
+      unless  => 'test -s /var/lib/oozie/ext-2.2.zip',
+    }
+    ->
+    exec {'extract-ext-2.2':
+      command => 'unzip ext-2.2.zip',
+      creates => '/var/lib/oozie/ext-2.2',
+      cwd     => '/var/lib/oozie',
+      path    => $path,
+    }
   }
 
   $adminusers = $::oozie::adminusers
