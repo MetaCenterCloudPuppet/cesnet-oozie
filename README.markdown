@@ -1,6 +1,6 @@
 ## Apache Oozie Puppet Module
 
-[![Build Status](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie.svg?branch=master)](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie)
+[![Build Status](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie.svg?branch=master)](https://travis-ci.org/MetaCenterCloudPuppet/cesnet-oozie) [![Puppet Forge](https://img.shields.io/puppetforge/v/cesnet/oozie.svg)](https://forge.puppetlabs.com/cesnet/oozie)
 
 #### Table of Contents
 
@@ -293,7 +293,7 @@ Values can be:
 * **derby**
 * **mysql**
 * **postgresql**
-* **oracle**.
+* **oracle**
 
 ####`db_host`
 
