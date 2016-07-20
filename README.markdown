@@ -15,6 +15,7 @@
     * [Security](#security)
     * [Compatibility](#compatibility)
     * [Cluster with more HDFS Name nodes](#multinn)
+    * [Upgrade](#upgrade)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
     * [Classes](#classes)
     * [Parameters (oozie class)](#parameters)
@@ -237,6 +238,37 @@ Note, the *oozie::hdfs* class must be used too, but only on one of the HDFS name
     node <HDFS_OTHER_NAMENODE> {
       include oozie::user
     }
+
+<a name="upgrade"></a>
+###Upgrade
+
+#### Configurations
+
+The best way is to refresh configurations from the new original (=remove the old) and relaunch puppet on top of it. You may need to remove helper file *~oozie/.puppet-ssl\**, when Hadoop SSL configuration files are recreated.
+
+For example:
+
+    alternative='cluster'
+    d='oozie'
+    mv /etc/{d}$/conf.${alternative} /etc/${d}/conf.cdhXXX
+    update-alternatives --auto ${d}-conf
+    rm -fv ~oozie/.puppet-ssl*
+
+    # upgrade
+    ...
+
+    puppet agent --test
+    #or: puppet apply ...
+
+#### Database schema
+
+Under *oozie* user:
+
+    /usr/lib/oozie/bin/ooziedb.sh create -run
+
+#### Shared library
+
+    oozie-setup sharelib upgrade -fs hdfs://${DEFAULT_FS} -locallib /usr/lib/oozie/oozie-sharelib-yarn
 
 <a name="reference"></a>
 ## Reference
