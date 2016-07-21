@@ -9,6 +9,7 @@ describe 'oozie::client::config', :type => 'class' do
         facts
       end
       it { should compile.with_all_deps }
+      it { should contain_file('/etc/profile.d/oozie.csh') }
       it { should contain_file('/etc/profile.d/oozie.sh') }
     end
   end
@@ -23,6 +24,7 @@ describe 'oozie::client', :type => 'class' do
         facts
       end
       it { should compile.with_all_deps }
+      it { should contain_class('oozie::client') }
       it { should contain_class('oozie::client::install') }
       it { should contain_class('oozie::client::config') }
     end
