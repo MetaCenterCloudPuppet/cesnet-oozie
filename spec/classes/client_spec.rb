@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe 'oozie::client::config', :type => 'class' do
-  $test_os.each do |facts|
-    os = facts['operatingsystem']
-
+  on_supported_os($test_os).each do |os,facts|
     context "on #{os}" do
       let(:facts) do
         facts
@@ -16,9 +14,7 @@ describe 'oozie::client::config', :type => 'class' do
 end
 
 describe 'oozie::client', :type => 'class' do
-  $test_os.each do |facts|
-    os = facts['operatingsystem']
-
+  on_supported_os($test_os).each do |os,facts|
     context "on #{os}" do
       let(:facts) do
         facts

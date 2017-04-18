@@ -15,23 +15,27 @@ SimpleCov.start do
   ])
 end
 
-$test_os=[{
-    'osfamily' => 'Debian',
-    'operatingsystem' => 'Debian',
-    'operatingsystemrelease' => ['7']
-  }, {
-    'osfamily' => 'Debian',
-    'operatingsystem' => 'Ubuntu',
-    'operatingsystemrelease' => ['14.04']
-  }, {
-    'osfamily' => 'RedHat',
-    'operatingsystem' => 'RedHat',
-    'operatingsystemrelease' => ['6']
-  }, {
-    'osfamily' => 'CentOS',
-    'operatingsystem' => 'RedHat',
-    'operatingsystemrelease' => ['6']
-  }]
+$test_os={
+    :supported_os => [
+        {
+          'osfamily' => 'Debian',
+          'operatingsystem' => 'Debian',
+          'operatingsystemrelease' => ['7']
+        }, {
+          'osfamily' => 'Debian',
+          'operatingsystem' => 'Ubuntu',
+          'operatingsystemrelease' => ['14.04']
+        }, {
+          'osfamily' => 'RedHat',
+          'operatingsystem' => 'RedHat',
+          'operatingsystemrelease' => ['6']
+        }, {
+          'osfamily' => 'CentOS',
+          'operatingsystem' => 'RedHat',
+          'operatingsystemrelease' => ['7']
+        }
+    ]
+}
 
 $test_config_dir={
   'CentOS' => '/etc/oozie/conf',
