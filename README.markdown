@@ -193,9 +193,9 @@ As you can see, PostgreSQL JDBC driver needs to be available for setup class *oo
 <a name="security"></a>
 ### Security
 
-Optionally also HTTPS can be enabled.
+Security is enabled by setting Kerberos realm in *realm* parameter. Optionally also HTTPS can be enabled.
 
-Security files must be prepared on proper places (see [Requirements](#requirements)). But there can be used files from Hadoop. Keystore passphrase should not differ from key passphrase.
+Security files must be prepared on proper places (see [Requirements](#requirements)). But there can be used files from Hadoop. Keystore passphrase can't differ from the key passphrase inside the store.
 
 **Example**:
 
@@ -206,13 +206,36 @@ Security files must be prepared on proper places (see [Requirements](#requiremen
       realm     => 'MY.REALM',
     }
 
-Note: the class *oozie::hdfs* creates the directory on HDFS. With enabled security, it must be included at HDFS namenode, or additional namenode keytab must exists.
+Note: the class *oozie::hdfs* creates the directory on HDFS. With enabled security, it must be included at HDFS namenode (or the class must be launched on the machine with the HDFS service admin keytab).
 
 Note 2: You can consider modify or remove *oozie.authentication.kerberos.name.rules*. The default value is needed only when using cross-realm authentication:
 
     properties => {
       'oozie.authentication.kerberos.name.rules' => '::undef',
     }
+
+<a name="cross-realm"></a>
+#### Cross-realm
+
+Cross-realm environment is problematic, see issue [OOZIE-2704](https://issues.apache.org/jira/browse/OOZIE-2704).
+
+Workarounds are possible:
+
+* setup
+
+The *krb5.conf* file must be modified temporarily so the default realm match the realm of *oozie/HOSTNAME* principal. Then you must launch setup manually (and mark it for *oozie* puppet module as done):
+
+    #defaultfs='hdfs://....'
+    oozie-setup sharelib create -fs $defaultfs -locallib /usr/lib/oozie/oozie-sharelib-yarn
+    touch /var/lib/oozie/.puppet-oozie-setup
+
+* runtime
+
+Link */etc/hadoop/conf/core-site.xml* file to tomcat lib directory. For example:
+
+    ln -s /etc/hadoop/conf/core-site.xml /usr/lib/bigtop-tomcat/lib/
+
+This is already done by *site_hadoop* CESNET puppet module.
 
 <a name="compatibility"></a>
 #### Compatibility
