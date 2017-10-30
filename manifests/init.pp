@@ -44,6 +44,12 @@ class oozie (
     $_defaultFS = "hdfs://${hdfs_hostname}:8020"
   }
 
+  if $https_keystore_password == '::undef' {
+    $_https_keystore_password = ''
+  } else {
+    $_https_keystore_password = $https_keystore_password
+  }
+
   $dyn_properties = {
     'oozie.service.ActionService.executor.ext.classes' => '
             org.apache.oozie.action.email.EmailActionExecutor,
@@ -200,7 +206,14 @@ class oozie (
 
   # Oozie Authentication
   if $https {
-    $https_properties = {
+    if $_https_keystore_password and $_https_keystore_password != '' {
+      $https_password_properties = {
+        'oozie.https.keystore.pass' => $_https_keystore_password,
+      }
+    } else {
+      $https_password_properties = undef
+    }
+    $https_common_properties = {
       'local.realm' => $realm,
       'oozie.authentication.type' => 'kerberos',
       'oozie.authentication.cookie.domain' => downcase($realm),
@@ -208,13 +221,15 @@ class oozie (
       #'oozie.authentication.kerberos.keytab' => '${oozie.service.HadoopAccessorService.keytab.file}',
       'oozie.authentication.kerberos.keytab' => '${user.home}/http.service.keytab',
       'oozie.authentication.kerberos.name.rules' => "
-RULE:[2:\$1;\$2@\$0](^oozie;.*@${realm}$)s/^.*$/oozie/
+RULE:[2:\$1;\$2@\$0](hue;.*@${realm})s/^.*$/hue/
+RULE:[2:\$1;\$2@\$0](oozie;.*@${realm})s/^.*$/oozie/
 DEFAULT
 ",
-      'oozie.https.keystore.pass' => $https_keystore_password,
+      'oozie.authentication.signature.secret' => "${::oozie::oozie_homedir}/http-auth-signature-secret",
     }
+    $https_properties = merge($https_password_properties, $https_common_properties)
   } else {
-    $https_properties = {}
+    $https_properties = undef
   }
 
   if $hue_hostnames and !empty($hue_hostnames) {

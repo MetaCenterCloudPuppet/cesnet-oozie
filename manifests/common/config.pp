@@ -35,7 +35,7 @@ class oozie::common::config {
       "set /files${env}/OOZIE_HTTPS_PORT/export ''",
       "set /files${env}/OOZIE_BASE_URL '${base_url}'",
       "set /files${env}/OOZIE_BASE_URL/export ''",
-      "set /files${env}/OOZIE_HTTPS_KEYSTORE_PASS '${::oozie::https_keystore_password}'",
+      "set /files${env}/OOZIE_HTTPS_KEYSTORE_PASS '${::oozie::_https_keystore_password}'",
       "set /files${env}/OOZIE_HTTPS_KEYSTORE_PASS/export ''",
     ],
   }

@@ -382,6 +382,8 @@ Certificates keystore file. Default: '/etc/security/server.keystore'.
 
 Certificates keystore file password. Default: 'changeit'.
 
+Note, the **::undef** value can reset *https_keystore_password* to empty value. But oozie doesn't accept empty password, the startup scripts will set its default value "password" in that case.
+
 ####`hue_hostnames`
 
 Authenticated Apache Hue hostnames. Default: [].
