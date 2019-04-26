@@ -57,6 +57,7 @@ Supported are:
 * Helper Files: */var/lib/oozie/.puppet-oozie-setup*, */var/lib/oozie/.puppet-oozie-schema-created*, */var/lib/hadoop-hdfs/.puppet-oozie-dir-created*
 * Secret Files (keytabs, certificates): some files are copied to oozie home directory */var/lib/oozie*
 * HDFS directory and its content: */user/oozie*
+* Databases: for supported databases and when not disabled: user created and database schema imported using puppetlabs modules
 
 <a name="setup-requirements"></a>
 ### Setup Requirements
@@ -67,7 +68,7 @@ Be aware of:
 
 * **Repositories**: see cesnet-hadoop module Setup Requirements for details
 
-* **No Database Setup**: there is no database setup in this module, only the schema is imported. See [Usage](#usage) for examples, how to use cesnet-oozie module for example with puppetlabs database modules.
+* **Database setup**: MariaDB/MySQL or PostgreSQL are supported. You need to install puppetlabs-mysql or puppetlabs-postgresql module, because they are not in dependencies.
 
 * **Secure mode**: keytabs must be prepared in /etc/security/keytabs/ (see *realm* parameter)
 
@@ -131,35 +132,27 @@ Note 2: You can override any module presets by the properties:
 <a name="mysql"></a>
 ### MySQL
 
-**Example MySQL**: Oozie with MySQL, using puppetlabs-mysql module:
+**Example MySQL**: Oozie with MySQL, puppetlabs-mysql module must be installed:
+
+Add this to the initial example:
 
     class{'oozie':
       ...
-      db => 'mysql',
+      db          => 'mysql',
       db_password => 'ooziepassword',
     }
 
     node ... {
       class { 'mysql::server':
-        root_password    => 'strongpassword',
-      }
-
-      mysql::db { 'oozie':
-        user     => 'oozie',
-        password => 'ooziepassword',
-        host     => 'localhost',
-        grant    => ['CREATE', 'INDEX', 'SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+        root_password => 'strongpassword',
       }
 
       class { 'mysql::bindings':
         java_enable => true,
       }
-
-      Class['mysql::bindings'] -> Class['oozie::server::config']
-      Mysql::Db['oozie'] -> Class['oozie::server::service']
     }
 
-As you can see, MySQL JDBC driver needs to be available for setup class *oozie::server::config* and the database needs to be available for startup class *oozie::server::service*.
+Database is created in *oozie::server::db* (*oozie::server*) class.
 
 <a name="postgresql"></a>
 ### PostgreSQL
@@ -168,27 +161,18 @@ As you can see, MySQL JDBC driver needs to be available for setup class *oozie::
 
     class{'oozie':
       ...
-      db => 'postgresql',
+      db          => 'postgresql',
       db_password => 'ooziepassword',
     }
 
     node ... {
+      ...
       class { 'postgresql::server':
         listen_addresses => 'localhost',
       }
-
-      postgresql::server::db { 'oozie':
-        user     => 'oozie',
-        password => postgresql_password('oozie', 'ooziepassword'),
-      }
-
-      include postgresql::lib::java
-
-      Class['postgresql::lib::java'] -> Class['oozie::server::config']
-      Postgresql::Server::Db['oozie'] -> Class['oozie::server::service']
     }
 
-As you can see, PostgreSQL JDBC driver needs to be available for setup class *oozie::server::config* and the database needs to be available for startup class *oozie::server::service*.
+Database is created in *oozie::server::db* (*oozie::server*) class.
 
 <a name="security"></a>
 ### Security
@@ -201,9 +185,9 @@ Security files must be prepared on proper places (see [Requirements](#requiremen
 
     class{'oozie':
       ...
-      https     => true,
+      https                   => true,
       https_keystore_password => 'changeit',
-      realm     => 'MY.REALM',
+      realm                   => 'MY.REALM',
     }
 
 Note: the class *oozie::hdfs* creates the directory on HDFS. With enabled security, it must be included at HDFS namenode (or the class must be launched on the machine with the HDFS service admin keytab).
@@ -338,6 +322,10 @@ It can be used only when supported (for example with Cloudera distribution).
 Switches the alternatives used for tomcat http/https configuration. Default: 'oozie-tomcat-conf'.
 
 It must have proper value according to the Oozie version used. There has been several changes in Cloudera. Other valid value may be *oozie-tomcat-deployment*.
+
+####`database_setup_enable`
+
+Enables database setup (if suported). Default: true.
 
 ####`db`
 

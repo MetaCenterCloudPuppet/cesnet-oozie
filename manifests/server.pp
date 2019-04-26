@@ -3,8 +3,16 @@
 # Oozie server.
 #
 class oozie::server {
-  class { '::oozie::server::install': }
-  -> class { '::oozie::server::config': }
-  ~> class { '::oozie::server::service': }
+  include ::oozie::server::install
+  include ::oozie::server::config
+  include ::oozie::server::db
+  include ::oozie::server::service
+
+  Class['::oozie::server::install']
+  -> Class['::oozie::server::config']
+  ~> Class['::oozie::server::service']
   -> Class['::oozie::server']
+
+  Class['oozie::server::db']
+  ~> Class['::oozie::server::service']
 }
