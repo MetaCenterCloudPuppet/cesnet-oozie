@@ -4,7 +4,7 @@
 # It sets variables according to platform.
 #
 class oozie::params {
-  $alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
+  $default_alternatives_ssl = "${::osfamily}-${::operatingsystem}" ? {
     /RedHat-Fedora/ => '',
     /Debian|RedHat/ => 'oozie-tomcat-conf',
   }

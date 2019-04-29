@@ -98,6 +98,7 @@ Basic example without security: configured Hadoop cluster without security is ne
     class{'oozie':
       defaultFS => "hdfs://${hdfs_hostname}:8020",
       realm     => '',
+      version   => '4',
     }
 
     node default {
@@ -418,6 +419,16 @@ Note: there has been change in Cloudera somewhere between 5.3.1 and 5.4.2, the o
 Enable security and Kerberos realm to use. Default: ''.
 
 Empty string disables the security.
+
+####`version`
+
+Oozie version. Default: '4'.
+
+Oozie version to distinguish differences between Oozie 4.x and Oozie 5.x:
+
+* moved from Tomcat to Jetty + SSL configured using properties instead of alternatives
+* properties names changes
+* credential classes list changes
 
 <a name="limitations"></a>
 ## Limitations

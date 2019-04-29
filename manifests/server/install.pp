@@ -7,17 +7,17 @@ class oozie::server::install {
   ensure_packages($oozie::packages['server'])
   ensure_packages($oozie::packages['unzip'])
 
-  if $::oozie::alternatives_ssl and $::oozie::alternatives_ssl != '' {
+  if $::oozie::_alternatives_ssl and $::oozie::_alternatives_ssl != '' {
     if $::oozie::https {
       $conf = '/etc/oozie/tomcat-conf.https'
     } else {
       $conf = '/etc/oozie/tomcat-conf.http'
     }
-    alternatives{$::oozie::alternatives_ssl:
+    alternatives{$::oozie::_alternatives_ssl:
       path => $conf,
     }
 
-    Package[$oozie::packages['server']] -> Alternatives[$::oozie::alternatives_ssl]
+    Package[$oozie::packages['server']] -> Alternatives[$::oozie::_alternatives_ssl]
   }
 
   Package[$oozie::packages['server']] -> Class['oozie::common::postinstall']

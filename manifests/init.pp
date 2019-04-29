@@ -6,7 +6,7 @@ class oozie (
   $acl = undef,
   $adminusers = undef,
   $alternatives = '::default',
-  $alternatives_ssl = $::oozie::params::alternatives_ssl,
+  $alternatives_ssl = '::default',
   $database_setup_enable = true,
   $db = 'derby',
   $db_host = 'localhost',
@@ -26,6 +26,7 @@ class oozie (
   $oozie_hostname = $::fqdn,
   $oozie_sharelib = $::oozie::params::oozie_sharelib,
   $realm = '',
+  $version = 4,
 ) inherits ::oozie::params {
 
   if $adminusers { validate_array($adminusers) }
@@ -43,6 +44,18 @@ class oozie (
     $_defaultFS = $defaultFS
   } else {
     $_defaultFS = "hdfs://${hdfs_hostname}:8020"
+  }
+
+  case $version {
+    /^4(\..*)?$/: {
+      # alternatives for SSL only for Oozie 4.x
+      $_alternatives_ssl = $::oozie::default_alternatives_ssl
+      $security_property_name = 'oozie.service.AuthorizationService.security.enabled'
+    }
+    default: {
+      $_alternatives_ssl = undef
+      $security_property_name = 'oozie.service.AuthorizationService.authorization.enabled'
+    }
   }
 
   if $https_keystore_password == '::undef' {
@@ -68,7 +81,7 @@ class oozie (
 ',
     'oozie.system.id' => 'oozie-${user.name}',
     'oozie.systemmode' => 'NORMAL',
-    'oozie.service.AuthorizationService.security.enabled' => false,
+    "${security_property_name}" => false,
     'oozie.service.PurgeService.older.than' => 30,
     'oozie.service.PurgeService.purge.interval' => 3600,
     'oozie.service.CallableQueueService.queue.size' => 10000,
@@ -83,7 +96,6 @@ class oozie (
     'oozie.service.HadoopAccessorService.nameNode.whitelist' => ' ',
     'oozie.service.HadoopAccessorService.hadoop.configurations' => "*=${::oozie::hadoop_confdir}",
     'oozie.service.WorkflowAppService.system.libpath' => '/user/${user.name}/share/lib',
-    'use.system.libpath.for.mapreduce.and.pig.jobs' => false,
     'oozie.authentication.type' => 'simple',
     'oozie.authentication.token.validity' => 3600,
     'oozie.authentication.cookie.domain' => '',
@@ -192,14 +204,26 @@ class oozie (
 
   # Hadoop Authentication
   if $realm and $realm != '' {
-    $sec_properties = {
+    $sec_base_properties = {
       'local.realm' => $realm,
-      'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials',
-      'oozie.service.AuthorizationService.security.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.principal' => "\${user.name}/${::fqdn}@\${local.realm}",
       #'oozie.service.HadoopAccessorService.keytab.file' => '${user.home}/oozie.keytab',
       'oozie.service.HadoopAccessorService.keytab.file' => '/etc/security/keytab/oozie.service.keytab',
+      "${security_property_name}" => true,
+    }
+    case $version {
+      /^4(\..*)?$/: {
+        $sec_versioned_properties = {
+          'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials',
+        }
+      }
+      default: {
+        $sec_versioned_properties = {
+          'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials, hdfs=org.apache.oozie.action.hadoop.HDFSCredentials, jhs=org.apache.oozie.action.hadoop.JHSCredentials, yarnrm=org.apache.oozie.action.hadoop.YarnRMCredentials',
+        }
+      }
+      $sec_properties = merge($sec_base_properties, $sec_versioned_properties)
     }
   } else {
     $sec_properties = {}
@@ -228,7 +252,18 @@ DEFAULT
 ",
       'oozie.authentication.signature.secret' => "${::oozie::oozie_homedir}/http-auth-signature-secret",
     }
-    $https_properties = merge($https_password_properties, $https_common_properties)
+    case $version {
+      /^4(\..*)?$/: {
+        $https_versioned_properties = undef
+      }
+      default: {
+        $https_versioned_properties = {
+          'oozie.https.enabled' => true,
+          'oozie.https.keystore.file' => "${::oozie::oozie_homedir}/.keystore",
+        }
+      }
+    }
+    $https_properties = merge($https_password_properties, $https_versioned_properties, $https_common_properties)
   } else {
     $https_properties = undef
   }
