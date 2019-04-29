@@ -105,6 +105,8 @@ Basic example without security: configured Hadoop cluster without security is ne
       include oozie::server
       include oozie::client
       include oozie::hdfs
+
+      Class['oozie::hdfs'] -> Class['oozie::server::service']
     }
 
 Note: The class *oozie::server::config* requires fully working HDFS (the namenode and enough datanodes), and *oozie::hdfs*. With multi-node cluster it may be needed to separate setup to more stages.
