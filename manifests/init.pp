@@ -223,8 +223,8 @@ class oozie (
           'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials, hdfs=org.apache.oozie.action.hadoop.HDFSCredentials, jhs=org.apache.oozie.action.hadoop.JHSCredentials, yarnrm=org.apache.oozie.action.hadoop.YarnRMCredentials',
         }
       }
-      $sec_properties = merge($sec_base_properties, $sec_versioned_properties)
     }
+    $sec_properties = merge($sec_base_properties, $sec_versioned_properties)
   } else {
     $sec_properties = {}
   }
