@@ -446,4 +446,3 @@ Only Puppet 3 can be tested by unit-tests, Puppet 4 can't use custom *site.pp*.
 * Testing:
  * basic: see *.travis.yml*
  * vagrant: [https://github.com/MetaCenterCloudPuppet/hadoop-tests](https://github.com/MetaCenterCloudPuppet/hadoop-tests)
-* Email: František Dvořák &lt;valtri@civ.zcu.cz&gt;
