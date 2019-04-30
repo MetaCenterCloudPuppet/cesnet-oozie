@@ -251,6 +251,7 @@ RULE:[2:\$1;\$2@\$0](oozie;.*@${realm})s/^.*$/oozie/
 DEFAULT
 ",
       'oozie.authentication.signature.secret' => "${::oozie::oozie_homedir}/http-auth-signature-secret",
+      'oozie.base.url' => "https://${oozie_hostname}:11443/oozie",
     }
     case $version {
       /^4(\..*)?$/: {
@@ -265,7 +266,9 @@ DEFAULT
     }
     $https_properties = merge($https_password_properties, $https_versioned_properties, $https_common_properties)
   } else {
-    $https_properties = undef
+    $https_properties = {
+      'oozie.base.url' => "http://${oozie_hostname}:11000/oozie",
+    }
   }
 
   if $hue_hostnames and !empty($hue_hostnames) {
