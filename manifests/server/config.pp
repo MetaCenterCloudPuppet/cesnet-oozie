@@ -9,10 +9,14 @@ class oozie::server::config {
     'postgresql' => '/usr/share/java/postgresql.jar',
     default    => undef,
   }
+  $jdbc_dst_dir = $::oozie::version ? {
+    /^4(\..*)?$/ => '/var/lib/oozie',
+    default      => '/usr/lib/oozie/lib',
+  }
   $jdbc_dst = $::oozie::db ? {
-    'mysql'      => '/var/lib/oozie/mysql-connector-java.jar',
-    'mariadb'    => '/var/lib/oozie/mysql-connector-java.jar',
-    'postgresql' => '/var/lib/oozie/postgresql.jar',
+    'mysql'      => "${jdbc_dst_dir}/mysql-connector-java.jar",
+    'mariadb'    => "${jdbc_dst_dir}/mysql-connector-java.jar",
+    'postgresql' => "${jdbc_dst_dir}/postgresql.jar",
     default    => undef,
   }
 
