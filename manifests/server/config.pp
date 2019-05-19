@@ -1,6 +1,7 @@
 # == Class oozie::server::config
 #
 class oozie::server::config {
+  include ::stdlib
   contain oozie::common::config
 
   $jdbc_src = $::oozie::db ? {
@@ -38,6 +39,9 @@ class oozie::server::config {
   }
 
   if $::oozie::gui_enable {
+    ensure_packages('wget')
+    Package['wget']
+    ->
     exec {'download-ext-2.2':
       command => 'wget -P /var/lib/oozie http://archive.cloudera.com/gplextras/misc/ext-2.2.zip || wget -P /var/lib/oozie http://scientific.zcu.cz/repos/hadoop/contrib/ext-2.2.zip',
       creates => '/var/lib/oozie/ext-2.2',
