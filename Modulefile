@@ -1,5 +1,5 @@
 name 'cesnet-oozie'
-version '0.12.1'
+version '0.12.2'
 source 'https://github.com/MetaCenterCloudPuppet/cesnet-oozie'
 author 'Frantisek Dvorak <valtri@civ.zcu.cz>'
 license 'MIT'
