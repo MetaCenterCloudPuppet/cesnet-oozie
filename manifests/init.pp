@@ -176,7 +176,15 @@ class oozie (
         'oozie.service.JPAService.jdbc.driver' => 'org.apache.derby.jdbc.EmbeddedDriver',
       }
     }
-    'mysql', 'mariadb': {
+    'mariadb': {
+      $db_properties = {
+        'oozie.service.JPAService.jdbc.driver' => 'org.mariadb.jdbc.Driver',
+        'oozie.service.JPAService.jdbc.url' => "jdbc:mariadb://${db_host}:3306/${db_name}",
+        'oozie.service.JPAService.jdbc.username' => $db_user,
+        'oozie.service.JPAService.jdbc.password' => $db_password,
+      }
+    }
+    'mysql': {
       $db_properties = {
         'oozie.service.JPAService.jdbc.driver' => 'com.mysql.jdbc.Driver',
         'oozie.service.JPAService.jdbc.url' => "jdbc:mysql://${db_host}:3306/${db_name}",

@@ -4,29 +4,12 @@ class oozie::server::config {
   include ::stdlib
   contain oozie::common::config
 
-  $jdbc_src = $::oozie::db ? {
-    'mysql'      => '/usr/share/java/mysql-connector-java.jar',
-    'mariadb'    => '/usr/share/java/mysql-connector-java.jar',
-    'postgresql' => '/usr/share/java/postgresql.jar',
-    default    => undef,
-  }
   $jdbc_dst_dir = $::oozie::version ? {
     /^4(\..*)?$/ => '/var/lib/oozie',
     default      => '/usr/lib/oozie/lib',
   }
-  $jdbc_dst = $::oozie::db ? {
-    'mysql'      => "${jdbc_dst_dir}/mysql-connector-java.jar",
-    'mariadb'    => "${jdbc_dst_dir}/mysql-connector-java.jar",
-    'postgresql' => "${jdbc_dst_dir}/postgresql.jar",
-    default    => undef,
-  }
-
-  if $jdbc_src and $jdbc_dst {
-    file {$jdbc_dst:
-      ensure => 'link',
-      links  => 'follow',
-      source => $jdbc_src,
-    }
+  hadoop_lib::jdbc { $jdbc_dst_dir:
+    db => $::oozie::db,
   }
 
   $touchfile_setup = '/var/lib/oozie/.puppet-oozie-setup'

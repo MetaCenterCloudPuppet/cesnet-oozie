@@ -142,6 +142,7 @@ Add this to the initial example:
     class{'oozie':
       ...
       db          => 'mysql',
+      #db          => 'mariadb',
       db_password => 'ooziepassword',
     }
 
@@ -152,6 +153,7 @@ Add this to the initial example:
 
       class { 'mysql::bindings':
         java_enable => true,
+        #java_package_name => 'libmariadb-java',
       }
     }
 
