@@ -15,10 +15,12 @@ class oozie::server::config {
   $touchfile_setup = '/var/lib/oozie/.puppet-oozie-setup'
   $path = '/sbin:/usr/sbin:/bin:/usr/bin'
   exec { 'oozie-setup':
-    command => "oozie-setup sharelib create -fs ${::oozie::_defaultFS} -locallib ${::oozie::oozie_sharelib} && touch ${touchfile_setup}",
-    path    => $path,
-    creates => $touchfile_setup,
-    require => [File["${::oozie::confdir}/oozie-site.xml"], File["${::oozie::confdir}/oozie-env.sh"]],
+    command   => "oozie-setup sharelib create -fs ${::oozie::_defaultFS} -locallib ${::oozie::oozie_sharelib} && touch ${touchfile_setup}",
+    path      => $path,
+    creates   => $touchfile_setup,
+    logoutput => true,
+    require   => [File["${::oozie::confdir}/oozie-site.xml"], File["${::oozie::confdir}/oozie-env.sh"]],
+    timeout   => 600,
   }
 
   if $::oozie::gui_enable {
