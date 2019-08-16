@@ -17,9 +17,6 @@ class oozie::server::db {
 
   if $::oozie::db and $::oozie::database_setup_enable {
     if $db == 'mysql' {
-      include ::mysql::server
-      include ::mysql::bindings
-
       mysql::db { $::oozie::db_name:
         user     => $::oozie::db_user,
         password => $::oozie::db_password,
@@ -32,9 +29,6 @@ class oozie::server::db {
     }
 
     if ($db == 'postgresql') {
-      include postgresql::server
-      include postgresql::lib::java
-
       postgresql::server::db { $::oozie::db_name:
         user     => $::oozie::db_user,
         password => postgresql_password($::oozie::db_user, $::oozie::db_password),

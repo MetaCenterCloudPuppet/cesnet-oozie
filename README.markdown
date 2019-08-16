@@ -175,6 +175,7 @@ Database is created in *oozie::server::db* (*oozie::server*) class.
       class { 'postgresql::server':
         listen_addresses => 'localhost',
       }
+      include postgresql::lib::java
     }
 
 Database is created in *oozie::server::db* (*oozie::server*) class.
