@@ -4,7 +4,7 @@ class oozie::server::config {
   include ::stdlib
   contain oozie::common::config
 
-  $jdbc_dst_dir = $::oozie::version ? {
+  $jdbc_dst_dir = "${::oozie::version}." ? {
     /^4(\..*)?$/ => '/var/lib/oozie',
     default      => '/usr/lib/oozie/lib',
   }

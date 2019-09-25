@@ -46,7 +46,7 @@ class oozie (
     $_defaultFS = "hdfs://${hdfs_hostname}:8020"
   }
 
-  case $version {
+  case "${::oozie::version}." {
     /^4(\..*)?$/: {
       # alternatives for SSL only for Oozie 4.x
       $_alternatives_ssl = $::oozie::default_alternatives_ssl
@@ -220,7 +220,7 @@ class oozie (
       'oozie.service.HadoopAccessorService.keytab.file' => '/etc/security/keytab/oozie.service.keytab',
       "${security_property_name}" => true,
     }
-    case $version {
+    case "${::oozie::version}." {
       /^4(\..*)?$/: {
         $sec_versioned_properties = {
           'oozie.credentials.credentialclasses' => 'hcat=org.apache.oozie.action.hadoop.HCatCredentials, hbase=org.apache.oozie.action.hadoop.HbaseCredentials, hive2=org.apache.oozie.action.hadoop.Hive2Credentials',
@@ -261,7 +261,7 @@ DEFAULT
       'oozie.authentication.signature.secret' => "${::oozie::oozie_homedir}/http-auth-signature-secret",
       'oozie.base.url' => "https://${oozie_hostname}:11443/oozie",
     }
-    case $version {
+    case "${::oozie::version}." {
       /^4(\..*)?$/: {
         $https_versioned_properties = undef
       }
