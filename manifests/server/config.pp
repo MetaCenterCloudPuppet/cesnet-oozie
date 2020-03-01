@@ -51,7 +51,7 @@ class oozie::server::config {
   }
 
   if $::oozie::realm and $::oozie::realm != '' {
-    file { '/etc/security/keytab/oozie.service.keytab':
+    file { $::oozie::keytab:
       owner => 'oozie',
       group => 'oozie',
       mode  => '0400',
@@ -63,7 +63,7 @@ class oozie::server::config {
       owner  => 'oozie',
       group  => 'oozie',
       mode   => '0400',
-      source => '/etc/security/keytab/http.service.keytab',
+      source => $::oozie::https_keytab,
     }
 
     file { "${::oozie::oozie_homedir}/.keystore":

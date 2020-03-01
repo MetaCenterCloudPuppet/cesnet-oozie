@@ -401,6 +401,16 @@ Certificates keystore file password. Default: 'changeit'.
 
 Note, the **::undef** value can reset *https_keystore_password* to empty value. But oozie doesn't accept empty password, the startup scripts will set its default value "password" in that case.
 
+####`https_keytab`
+
+Keytab file for SPNEGO HTTPS. Default: '/etc/security/keytab/http.service.keytab'.
+
+The file is copied into oozie home directory.
+
+####`keytab`
+
+Oozie keytab file. Default: '/etc/security/keytab/oozie.service.keytab'.
+
 ####`hue_hostnames`
 
 Authenticated Apache Hue hostnames. Default: [].

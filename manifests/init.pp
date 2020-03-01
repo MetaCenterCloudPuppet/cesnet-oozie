@@ -20,7 +20,9 @@ class oozie (
   $https = false,
   $https_keystore = '/etc/security/server.keystore',
   $https_keystore_password = 'changeit',
+  $https_keytab = '/etc/security/keytab/http.service.keytab',
   $hue_hostnames = [],
+  $keytab = '/etc/security/keytab/oozie.service.keytab',
   $perform = false,
   $properties = {},
   $oozie_hostname = $::fqdn,
@@ -217,7 +219,7 @@ class oozie (
       'oozie.service.HadoopAccessorService.kerberos.enabled' => true,
       'oozie.service.HadoopAccessorService.kerberos.principal' => "\${user.name}/${::fqdn}@\${local.realm}",
       #'oozie.service.HadoopAccessorService.keytab.file' => '${user.home}/oozie.keytab',
-      'oozie.service.HadoopAccessorService.keytab.file' => '/etc/security/keytab/oozie.service.keytab',
+      'oozie.service.HadoopAccessorService.keytab.file' => $keytab,
       "${security_property_name}" => true,
     }
     case "${::oozie::version}." {
