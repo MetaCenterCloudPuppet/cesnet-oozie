@@ -79,13 +79,12 @@ Be aware of:
 <a name="beginning-with-oozie"></a>
 ### Beginning with oozie
 
-Basic example without security: configured Hadoop cluster without security is needed. You will also need to add permissions for Oozie to Hadoop.
-
-    hdfs_hostname=...
+Basic example without security: configured Hadoop cluster without security is needed (at least **defaultFS** or **hdfs_hostname** parameters in hadoop class). You will also need to add permissions for Oozie to Hadoop.
 
     class{'hadoop':
-      ...
-
+      hdfs_hostname=...
+	  #defaultFS=...
+	  ...
       properties => {
         ...
         'hadoop.proxyuser.oozie.groups' => '*',
@@ -96,7 +95,6 @@ Basic example without security: configured Hadoop cluster without security is ne
     }
 
     class{'oozie':
-      defaultFS => "hdfs://${hdfs_hostname}:8020",
       realm     => '',
       version   => '4',
     }
@@ -362,12 +360,6 @@ Database password. Default: ' ' (space)
 
 Note, Oozie requires a space, when using empty password.
 
-####`defaultFS`
-
-Hadoop URI. Default: undef.
-
-Used *hdfs://${hdfs\_hostname}:8020*, if not specified.
-
 ####`environment`
 
 Define environment variable OOZIE\_URL on clients. Default: true.
@@ -380,12 +372,6 @@ There may be reasons to disable it:
 
 * Its license is GPL (probably incompatible and less free than Apache 2.0, but IANAL)
 * GUI is not compatible with Java >= 8 (tested with CDH <= 5.7.1, Oozie <= 4.1.0)
-
-####`hdfs_hostname`
-
-Hadoop HDFS namenode, if *defaultFS* is not specified. Default: 'localhost'.
-
-It is overridden by *defaultFS*.
 
 ####`https`
 

@@ -5,8 +5,6 @@
 # Requires all install, config, and service classes.
 #
 class oozie::server::db {
-  include ::stdlib
-
   $db = $::oozie::db ? {
     'derby'         => 'derby',
     /mysql|mariadb/ => 'mysql',

@@ -5,10 +5,7 @@
 # This class is needed to be launched on one HDFS namenode. With some limitations it can be launched on any Hadoop node (user oozie created or oozie installed on namenode, kerberos ticket available on the local node).
 #
 class oozie::hdfs {
-  include ::stdlib
   include ::oozie::user
-
-  validate_string($::oozie::_defaultFS)
 
   $touchfile = 'oozie-dir-created'
   hadoop::kinit { 'oozie-kinit':

@@ -13,10 +13,8 @@ class oozie (
   $db_name = 'oozie',
   $db_user = 'oozie',
   $db_password = ' ',
-  $defaultFS = undef,
   $environment = true,
   $gui_enable = true,
-  $hdfs_hostname = 'localhost',
   $https = false,
   $https_keystore = '/etc/security/server.keystore',
   $https_keystore_password = 'changeit',
@@ -30,23 +28,6 @@ class oozie (
   $realm = '',
   $version = 4,
 ) inherits ::oozie::params {
-
-  if $adminusers { validate_array($adminusers) }
-  validate_string($db)
-  validate_string($db_host)
-  validate_string($db_name)
-  validate_string($db_user)
-  validate_string($hdfs_hostname)
-  validate_bool($https)
-  validate_bool($perform)
-  validate_hash($properties)
-  if $realm { validate_string($realm) }
-
-  if $defaultFS {
-    $_defaultFS = $defaultFS
-  } else {
-    $_defaultFS = "hdfs://${hdfs_hostname}:8020"
-  }
 
   case "${::oozie::version}." {
     /^4(\..*)?$/: {

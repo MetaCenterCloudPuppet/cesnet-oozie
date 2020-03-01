@@ -1,1 +1,8 @@
 See https://github.com/MetaCenterCloudPuppet/cesnet-oozie/commits/master.
+
+#Incompatible changes
+
+1.0.0:
+
+* removed **hdfs_hostname** parameter (replaced by **hadoop::_defaultFS*)
+* removed **defaultFS** parameter (replaced by **hadoop::_defaultFS*)
