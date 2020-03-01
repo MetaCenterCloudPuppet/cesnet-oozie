@@ -96,7 +96,7 @@ Basic example without security: configured Hadoop cluster without security is ne
 
     class{'oozie':
       realm     => '',
-      version   => '4',
+      version   => 5,
     }
 
     node default {
@@ -423,7 +423,7 @@ Empty string disables the security.
 
 ####`version`
 
-Oozie version. Default: '4'.
+Oozie version. Default: 5.
 
 Oozie version to distinguish differences between Oozie 4.x and Oozie 5.x:
 

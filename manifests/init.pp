@@ -26,7 +26,7 @@ class oozie (
   $oozie_hostname = $::fqdn,
   $oozie_sharelib = $::oozie::params::oozie_sharelib,
   $realm = '',
-  $version = 4,
+  $version = 5,
 ) inherits ::oozie::params {
 
   case "${::oozie::version}." {
