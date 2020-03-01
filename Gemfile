@@ -1,7 +1,13 @@
 source ENV['GEM_SOURCE'] || "https://rubygems.org"
 
 group :test do
-  gem "rake", '< 11'
+  if RUBY_VERSION >= '2.2'
+    gem "rake"
+  elsif RUBY_VERSION >= '2.0'
+    gem "rake", '< 13'
+  else
+    gem "rake", '< 12.3.0'
+  end
   gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 3.8.0'
   gem "rspec"
   gem "rspec-puppet"
@@ -12,8 +18,14 @@ group :test do
     gem 'metadata-json-lint'
   end
   gem "rspec-puppet-facts"
-  gem 'simplecov', '>= 0.11.0'
-  gem 'simplecov-console'
+  if RUBY_VERSION >= '2.4'
+    gem 'simplecov', '>= 0.11.0'
+    gem 'simplecov-console'
+  else
+    gem 'simplecov', '>= 0.11.0', '< 0.18'
+    gem 'simplecov-console', '< 0.18'
+    gem 'simplecov-html', '< 0.11'
+  end
 
   gem "puppet-lint-absolute_classname-check"
   gem "puppet-lint-leading_zero-check"
@@ -36,6 +48,5 @@ end
 group :development do
   gem "travis"              if RUBY_VERSION >= '2.1.0'
   gem "travis-lint"         if RUBY_VERSION >= '2.1.0'
-  gem "puppet-blacksmith"
   gem "guard-rake"          if RUBY_VERSION >= '2.2.5' # per dependency https://rubygems.org/gems/ruby_dep
 end
