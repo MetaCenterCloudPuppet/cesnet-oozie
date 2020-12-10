@@ -1,6 +1,6 @@
 {
   "name": "cesnet-oozie",
-  "version": "0.13.0",
+  "version": "1.0.0",
   "author": "Frantisek Dvorak <valtri@civ.zcu.cz>",
   "summary": "Apache Oozie Workflow Scheduler",
   "license": "MIT",
