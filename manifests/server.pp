@@ -8,11 +8,11 @@ class oozie::server {
   include ::oozie::server::db
   include ::oozie::server::service
 
-  Class['::oozie::server::install']
-  -> Class['::oozie::server::config']
-  ~> Class['::oozie::server::service']
-  -> Class['::oozie::server']
+  Class['oozie::server::install']
+  -> Class['oozie::server::config']
+  ~> Class['oozie::server::service']
+  -> Class['oozie::server']
 
   Class['oozie::server::db']
-  ~> Class['::oozie::server::service']
+  ~> Class['oozie::server::service']
 }
