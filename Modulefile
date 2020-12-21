@@ -8,6 +8,6 @@ description 'Setup Apache Oozie Workflow Scheduler'
 project_page 'https://github.com/MetaCenterCloudPuppet/cesnet-oozie'
 
 dependency 'puppetlabs/stdlib', '>= 1.0.0 <7.0.0'
-dependency 'adrien/alternatives', '>= 0.3.0 <1.0.0'
+dependency 'puppet/alternatives', '<4.0.0'
 dependency 'cesnet/hadoop', '>= 3.0.0 <4.0.0'
-dependency 'cesnet/hadoop_lib', '>=0.4.0 <1.0.0'
+dependency 'cesnet/hadoop_lib', '>=0.5.0 <1.0.0'
